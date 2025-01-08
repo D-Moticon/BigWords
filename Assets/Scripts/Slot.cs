@@ -4,7 +4,7 @@ public class Slot : MonoBehaviour
 {
     BoxCollider2D bc2d;
 
-    Card card;
+    public Card card;
     [HideInInspector]public Rack owningRack;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -18,7 +18,7 @@ public class Slot : MonoBehaviour
     {
         if (bc2d.OverlapPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)))
         {
-            Singleton.Instance.tileHandler.SlotHovered(this);
+            Singleton.Instance.selectionHandler.SlotHovered(this);
         }
     }
 

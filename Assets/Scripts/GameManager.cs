@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using TMPro;
+using MoreMountains.Feedbacks;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,6 +18,7 @@ public class GameManager : MonoBehaviour
         public GameManager gameManager;
         public Deck playerDeck;
         public Rack playerRack;
+        public Deck discardPile;
         public Actor player;
 
         public State()
@@ -23,6 +26,7 @@ public class GameManager : MonoBehaviour
             gameManager = Singleton.Instance.gameManager;
             playerDeck = gameManager.playerDeck;
             playerRack = gameManager.playerRack;
+            discardPile = gameManager.discardPile;
             player = gameManager.player;
         }
     }
@@ -30,28 +34,51 @@ public class GameManager : MonoBehaviour
     private List<State> states = new List<State>();
     private int currentStateIndex = 0;
     public State currentState;
+    public EnemyEncounterSO currentEncounter;
     public Rack playerHand;
     public Rack playerRack;
+    public Deck discardPile;
     public Actor player;
-    public Actor testEnemy;
+    public Actor actorPrefab;
     public DeckSO playerStartingDeck;
     public Transform playerDeckLocation;
+    public Transform enemyCenterLocation;
     Deck playerDeck;
 
     [FoldoutGroup("Rules")]
-    public int drawsPerTurn = 7;
+    public float smartShuffleFactor = 0f;
+    public int startingDiscards = 5;
+    public float multAddPerCardCount = 0.2f;
 
-    public bool playButtonPressed = false;
+    bool playButtonPressed = false;
+
+    [FoldoutGroup("UI")]
+    public TMP_Text discardsText;
+    [FoldoutGroup("UI")]
+    public TMP_Text cardCountMultiplierText;
+
+    [FoldoutGroup("SFX")]
+    public SFXInfo cardCountMultiplierSFX;
+
+    [FoldoutGroup("UpdatedAtRuntime")]
+    public Actor currentlyTargetedActor;
+    [FoldoutGroup("UpdatedAtRuntime")]
+    public List<Actor> enemies;
+    [FoldoutGroup("UpdatedAtRuntime")]
+    public int discardsRemaining;
 
     public void Start()
     {
         playerDeck = Singleton.Instance.cardCreator.CreateDeckFromSO(playerStartingDeck);
         playerDeck.name = "PlayerDeck";
         playerDeck.transform.position = playerDeckLocation.position;
+        playerDeck.SmartShuffle(smartShuffleFactor);
 
         states.Add(new DrawState());
         states.Add(new PlayState());
         states.Add(new ProcessAttackState());
+
+        CreateEncounter(currentEncounter);
 
         if (states.Count > 0)
         {
@@ -71,6 +98,7 @@ public class GameManager : MonoBehaviour
             // 2) Check if it’s done
             if (currentState.isComplete)
             {
+                currentState.isComplete = false;
                 // Exit the old state
                 currentState.Exit();
 
@@ -98,6 +126,32 @@ public class GameManager : MonoBehaviour
         playButtonPressed = false;
     }
 
+    public void CreateEncounter(EnemyEncounterSO enemyEncounterSO)
+    {
+        if (enemies != null)
+        {
+            foreach (Actor a in enemies)
+            {
+                Destroy(a.gameObject);
+            }
+        }
+
+        enemies = new List<Actor>();
+
+        for (int i = 0; i < enemyEncounterSO.enemyInfos.Count; i++)
+        {
+            EnemyEncounterSO.EnemyInfo ei = enemyEncounterSO.enemyInfos[i];
+
+            Actor enemy = ei.enemy.CreateEnemyFromSO();
+            enemy.transform.position = enemyCenterLocation.position + (Vector3)ei.position;
+            enemy.SetHealthAndMaxHealth(ei.startingHP);
+            enemies.Add(enemy);
+        }
+
+        discardsRemaining = startingDiscards;
+        UpdateUI();
+    }
+
     public class DrawState : State
     {
         public override void Enter()
@@ -120,7 +174,7 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
 
-            int drawCount = Mathf.Min(gameManager.drawsPerTurn, playerDeck.currentCards.Count);
+            int drawCount = Mathf.Min(gameManager.playerHand.GetNumberOpenSlots(), playerDeck.currentCards.Count);
 
             for (int i = 0; i < drawCount; i++)
             {
@@ -147,7 +201,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        c.MoveCardLerp(s.transform.position, 1f, s);
+        c.MoveCardToSlot(s, 1f);
     }
 
     public class PlayState : State
@@ -164,18 +218,33 @@ public class GameManager : MonoBehaviour
 
         public override void Update()
         {
-            if (gameManager.playButtonPressed)
+            if (gameManager.currentlyTargetedActor == null)
             {
-                Rack.TestResults rackTest = playerRack.TestRack();
-                if (rackTest.isValidWord)
+                if (gameManager.enemies == null || gameManager.enemies.Count == 0)
                 {
-                    isComplete = true;
+                    Singleton.Instance.selectionHandler.TargetActor(player);
                 }
 
                 else
                 {
-                    print("NOT VALID WORD");
+                    Singleton.Instance.selectionHandler.TargetActor(gameManager.enemies[0]);
                 }
+                
+                return;
+            }
+
+            if (gameManager.playButtonPressed)
+            {
+                Rack.TestResults rackTest = playerRack.TestRack();
+
+                if (!rackTest.isValidWord)
+                {
+                    print("NOT VALID WORD");
+                    return;
+                }
+
+                isComplete = true;
+                
             }
         }
     }
@@ -209,10 +278,30 @@ public class GameManager : MonoBehaviour
             }
 
             attackInfo.source = player;
-            attackInfo.target = gameManager.testEnemy;
+            attackInfo.target = gameManager.currentlyTargetedActor;
             attackInfo.cards = rackTest.cards;
             attackInfo.word = rackTest.word;
+            attackInfo.cardCount = rackTest.cards.Count;
 
+            //Card Count Multiplier
+            float cardCountMultiplier = 1f;
+            gameManager.cardCountMultiplierText.text = "";
+            for (int i = 0; i < attackInfo.cards.Count; i++)
+            {
+                cardCountMultiplier += gameManager.multAddPerCardCount;
+                gameManager.cardCountMultiplierText.text = $"x{cardCountMultiplier}";
+                gameManager.cardCountMultiplierText.GetComponentInChildren<MMF_Player>().PlayFeedbacks();
+                attackInfo.cards[i].SimpleBumpFeel();
+                gameManager.cardCountMultiplierSFX.Play();
+
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            attackInfo.cardCountMultiplier = cardCountMultiplier;
+
+            yield return new WaitForSeconds(0.5f);
+
+            //Card Effects
             for (int i = 0; i < attackInfo.cards.Count; i++)
             {
                 List<CardEffect> cardEffects = attackInfo.cards[i].cardEffects;
@@ -231,10 +320,43 @@ public class GameManager : MonoBehaviour
                 yield return new WaitForSeconds(0.2f);
             }
 
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(0.4f);
+
+            for (int i = 0; i < attackInfo.cards.Count; i++)
+            {
+                attackInfo.cards[i].MoveCardToDeck(discardPile);
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            yield return new WaitForSeconds(0.5f);
+
             isComplete = true;
         }
 
         
+    }
+
+    public void ShufflePlayerHand()
+    {
+        playerHand.Shuffle();
+    }
+
+    public bool TryDiscard(Card c)
+    {
+        if (discardsRemaining > 0)
+        {
+            c.MoveCardToDeck(discardPile);
+            discardsRemaining--;
+            DrawCard();
+            UpdateUI();
+            return true;
+        }
+
+        return false;
+    }
+
+    void UpdateUI()
+    {
+        discardsText.text = discardsRemaining.ToString();
     }
 }

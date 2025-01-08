@@ -5,8 +5,9 @@ public class Singleton : MonoBehaviour
     public static Singleton Instance { get; private set; }
 
     public GameManager gameManager;
+    public AudioManager audioManager;
     public WordChecker wordChecker;
-    public CardHandler tileHandler;
+    public SelectionHandler selectionHandler;
     public CardCreator cardCreator;
     public PrefabReferences prefabReferences;
 

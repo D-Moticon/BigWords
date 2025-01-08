@@ -7,12 +7,13 @@ public class DeckSO : ScriptableObject
 
     //This class contains the card, the letter, and any other modifiers
     [System.Serializable]
-    public class FullCardSO
+    public class CardInfo
     {
         public CardSO card;
         public char letter;
+        public int quantity;
     }
 
-    public List<FullCardSO> cards;
+    public List<CardInfo> cardInfos;
 
 }

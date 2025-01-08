@@ -7,4 +7,6 @@ public class AttackInfo
     public Actor target;
     public string word;
     public List<Card> cards;
+    public int cardCount;
+    public float cardCountMultiplier;
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 
 public class Rack : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class Rack : MonoBehaviour
     List<Slot> slots;
     public float slotSpacing = 1f;
     public Slot slotPrefab;
+
+    [FoldoutGroup("SFX")]
+    public SFXInfo slipCardsSFX;
 
     private void OnDrawGizmos()
     {
@@ -56,7 +60,7 @@ public class Rack : MonoBehaviour
             {
                 if (slots[i].GetCard() != null)
                 {
-                    slots[i].GetCard().MoveCardToSlot(slots[i + 1], 0.1f);
+                    slots[i].GetCard().MoveCardToSlot(slots[i + 1], 0.1f, false);
                 }
             }
 
@@ -79,10 +83,12 @@ public class Rack : MonoBehaviour
             {
                 if (slots[i].GetCard() != null)
                 {
-                    slots[i].GetCard().MoveCardToSlot(slots[i - 1], 0.1f);
+                    slots[i].GetCard().MoveCardToSlot(slots[i - 1], 0.1f, false);
                 }
             }
         }
+
+        slipCardsSFX.Play();
     }
 
     public class TestResults
@@ -165,6 +171,20 @@ public class Rack : MonoBehaviour
         return cs;
     }
 
+    public int GetNumberOpenSlots()
+    {
+        int openSlots = 0;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i].GetCard() == null)
+            {
+                openSlots++;
+            }
+        }
+
+        return openSlots;
+    }
+
     public void AddTileToEndOfRack(Card t)
     {
         for (int i = 0; i < slots.Count; i++)
@@ -193,5 +213,26 @@ public class Rack : MonoBehaviour
     public int GetIndexOfSlot(Slot s)
     {
         return (slots.IndexOf(s));
+    }
+
+    public void Shuffle()
+    {
+        List<int> indexes = new List<int>();
+
+        List<Card> cards = GetRackCards();
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            indexes.Add(i);
+        }
+
+        indexes.Shuffle();
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            int targetIndex = indexes[i];
+            Slot s = slots[targetIndex];
+            cards[i].MoveCardToSlot(s, 0.2f, false);
+        }
     }
 }

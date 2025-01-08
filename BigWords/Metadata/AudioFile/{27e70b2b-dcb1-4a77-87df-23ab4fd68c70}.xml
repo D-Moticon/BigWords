@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{27e70b2b-dcb1-4a77-87df-23ab4fd68c70}">
+		<property name="assetPath">
+			<value>SFX/bullet_impact_body_flesh_02.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.69999999999999996</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6825f207-e024-437f-be50-434ce430d6ad}</destination>
+		</relationship>
+	</object>
+</objects>

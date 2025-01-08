@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Strike
   m_EditorClassIdentifier: 
   cardName: Strike
-  cardArt: {fileID: 0}
+  cardArt: {fileID: 7894308883384308476, guid: be1065731bf99c447b745215050235aa, type: 3}
   cardEffects:
   - rid: 6827158133805416846
   references:
@@ -26,3 +26,12 @@ MonoBehaviour:
         feelPlayerPrefab: {fileID: 8635747216109465816, guid: b57e0b1645d39134bb4a615e34097c9c, type: 3}
         feelPlayer: {fileID: 0}
         damage: 1
+        impactSFX:
+          sfx:
+            Guid:
+              Data1: -1963977612
+              Data2: 1310067309
+              Data3: 239817088
+              Data4: 71640443
+            Path: event:/SFX/Strike
+          vol: 0.3

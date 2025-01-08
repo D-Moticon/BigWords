@@ -10,11 +10,13 @@ public class CardCreator : MonoBehaviour
         Deck deck = new GameObject().AddComponent<Deck>();
         deck.name = "NewDeck";
 
-        for (int i = 0; i < deckSO.cards.Count; i++)
+        for (int i = 0; i < deckSO.cardInfos.Count; i++)
         {
-            Card card = CreateCardFromSO(deckSO.cards[i].card, deckSO.cards[i].letter);
-            //print(card.name);
-            deck.AddCard(card);
+            for (int j = 0; j < deckSO.cardInfos[i].quantity; j++)
+            {
+                Card card = CreateCardFromSO(deckSO.cardInfos[i].card, deckSO.cardInfos[i].letter);
+                card.MoveCardToDeck(deck, 0.01f, false);
+            }
         }
 
         return deck;
@@ -32,6 +34,7 @@ public class CardCreator : MonoBehaviour
         }
 
         newCard.SetLetter(letter);
+        newCard.SetCardImage(cardSO.cardArt);
 
         return newCard;
     }

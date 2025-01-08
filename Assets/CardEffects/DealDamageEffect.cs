@@ -5,22 +5,24 @@ using System.Collections;
 public class DealDamageEffect : CardEffect
 {
     public float damage;
+    public SFXInfo impactSFX;
 
     public override IEnumerator CardActivatedEffect(AttackInfo attackInfo)
     {
-        attackInfo.target.Damage(damage);
+        float finalDamage = damage * attackInfo.cardCountMultiplier;
+
+        attackInfo.target.Damage(finalDamage);
 
         if (feelPlayer != null)
         {
             feelPlayer.PlayFeedbacks();
 
-            while (feelPlayer.IsPlaying)
-            {
-                yield return null;
-            }
+            yield return new WaitForSeconds(0.02f);
         }
 
-        Debug.Log($"{attackInfo.source} used {owningCard.GetCardName()} to damage {attackInfo.target} for {damage}");
+        impactSFX.Play();
+        attackInfo.target.PlayStandardHitFeel();
+        Debug.Log($"{attackInfo.source} used {owningCard.GetCardName()} to damage {attackInfo.target} for {finalDamage}");
     }
 
     public override string GetEffectDescription()

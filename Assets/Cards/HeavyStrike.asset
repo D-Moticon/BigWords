@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HeavyStrike
   m_EditorClassIdentifier: 
   cardName: Heavy Strike
-  cardArt: {fileID: 0}
+  cardArt: {fileID: -2400653049297235265, guid: e1c6effb0fb16d8438c3137baeee292e, type: 3}
   cardEffects:
   - rid: 6827158133805416846
   references:
@@ -26,3 +26,12 @@ MonoBehaviour:
         feelPlayerPrefab: {fileID: 8635747216109465816, guid: b57e0b1645d39134bb4a615e34097c9c, type: 3}
         feelPlayer: {fileID: 0}
         damage: 2
+        impactSFX:
+          sfx:
+            Guid:
+              Data1: -831959806
+              Data2: 1232527246
+              Data3: 841038014
+              Data4: 455874919
+            Path: event:/SFX/HeavyStrike
+          vol: 0.4
