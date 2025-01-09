@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class SelectionHandler : MonoBehaviour
 {
-    Card currentlyHeldCard;
-    Card currentlyHoveredCard;
+    public Card currentlyHeldCard;
+    public Card currentlyHoveredCard;
     Slot currentlyHoveredSlot;
     Actor currentlyHoveredActor;
     Actor currentlyTargetedActor;
@@ -47,7 +47,7 @@ public class SelectionHandler : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
-            if (currentlyHeldCard != null && currentlyHoveredSlot != null)
+            if (currentlyHeldCard != null && currentlyHoveredSlot != null && currentlyHoveredSlot.GetCard() == null)
             {
                 currentlyHeldCard.MoveCardToSlot(currentlyHoveredSlot, 0.1f);
             }
@@ -77,14 +77,14 @@ public class SelectionHandler : MonoBehaviour
         currentlyHoveredSlot = slot;
     }
 
-    public void CardHovered(Card tile)
+    public void CardHovered(Card card)
     {
-        currentlyHoveredCard = tile;
+        currentlyHoveredCard = card;
     }
 
-    public void CardNotHovered(Card tile)
+    public void CardNotHovered(Card card)
     {
-        if (tile == currentlyHoveredCard)
+        if (card == currentlyHoveredCard)
         {
             currentlyHoveredCard = null;
         }

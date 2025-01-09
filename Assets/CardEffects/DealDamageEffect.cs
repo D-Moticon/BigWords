@@ -21,7 +21,6 @@ public class DealDamageEffect : CardEffect
         }
 
         impactSFX.Play();
-        attackInfo.target.PlayStandardHitFeel();
         Debug.Log($"{attackInfo.source} used {owningCard.GetCardName()} to damage {attackInfo.target} for {finalDamage}");
     }
 

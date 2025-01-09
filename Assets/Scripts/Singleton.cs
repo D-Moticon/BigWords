@@ -10,6 +10,7 @@ public class Singleton : MonoBehaviour
     public SelectionHandler selectionHandler;
     public CardCreator cardCreator;
     public PrefabReferences prefabReferences;
+    public UIManager uiManager;
 
     private void Awake()
     {

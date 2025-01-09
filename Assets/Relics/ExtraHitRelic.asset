@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a006d43166e8ad54d9f83f9ad3aa1983, type: 3}
+  m_Name: ExtraHitRelic
+  m_EditorClassIdentifier: 
+  relicName: Extra Hit
+  relicDescription: 
+  relicSprite: {fileID: 21300004, guid: 358b5d9f23bc9413e87c9948acc67ee1, type: 3}
+  relicSFX:
+    sfx:
+      Guid:
+        Data1: -1963977612
+        Data2: 1310067309
+        Data3: 239817088
+        Data4: 71640443
+      Path: event:/SFX/Strike
+    vol: 0.5
+  damage: 1
+  projectilePrefab: {fileID: 6465158621303419580, guid: d1cd9307ea5861b4bbce90ec48873e81, type: 3}
+  projectileImpactSFX:
+    sfx:
+      Guid:
+        Data1: -1963977612
+        Data2: 1310067309
+        Data3: 239817088
+        Data4: 71640443
+      Path: event:/SFX/Strike
+    vol: 0.5
+  projectileImpactVFX: {fileID: 11400000, guid: e712d4ba7146a064d9bd8afcb3df13a9, type: 2}
+  projectileSpeed: 150

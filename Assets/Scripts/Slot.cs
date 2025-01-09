@@ -32,7 +32,7 @@ public class Slot : MonoBehaviour
         card = null;
     }
 
-    public void RemoveTile()
+    public void RemoveCard()
     {
         if (card != null)
         {

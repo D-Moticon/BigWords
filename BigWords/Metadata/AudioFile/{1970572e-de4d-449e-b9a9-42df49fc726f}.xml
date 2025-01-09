@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{1970572e-de4d-449e-b9a9-42df49fc726f}">
+		<property name="assetPath">
+			<value>SFX/CWizard_Impact_001.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.9134693877551021</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6825f207-e024-437f-be50-434ce430d6ad}</destination>
+		</relationship>
+	</object>
+</objects>

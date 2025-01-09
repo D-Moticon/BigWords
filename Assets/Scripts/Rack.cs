@@ -42,53 +42,80 @@ public class Rack : MonoBehaviour
 
     public void MoveRackCardsToMakeRoom(Slot s, bool leftSide)
     {
-        int slotIndex = slots.IndexOf(s);
+        if (GetNumberOpenSlots() == 0)
+        {
+            return;
+        }
 
         if (leftSide)
         {
-            int lastCardIndex = slotIndex;
-            for (int i = slotIndex; i < slots.Count; i++)
-            {
-                if (slots[i].GetCard() == null)
-                {
-                    lastCardIndex = i-1;
-                    break;
-                }
-            }
-
-            for (int i = lastCardIndex; i >= slotIndex; i--)
-            {
-                if (slots[i].GetCard() != null)
-                {
-                    slots[i].GetCard().MoveCardToSlot(slots[i + 1], 0.1f, false);
-                }
-            }
-
-
+            ShiftCardsRightToMakeRoom(s);
         }
 
         else
         {
-            int firstCardIndex = slotIndex;
-            for (int i = slotIndex; i >= 0; i--)
-            {
-                if (slots[i].GetCard() == null)
-                {
-                    firstCardIndex = i+1;
-                    break;
-                }
-            }
-
-            for (int i = firstCardIndex; i <= slotIndex; i++)
-            {
-                if (slots[i].GetCard() != null)
-                {
-                    slots[i].GetCard().MoveCardToSlot(slots[i - 1], 0.1f, false);
-                }
-            }
+            ShiftCardsLeftToMakeRoom(s);
         }
 
         slipCardsSFX.Play();
+    }
+
+    void ShiftCardsLeftToMakeRoom(Slot s)
+    {
+        int slotIndex = slots.IndexOf(s);
+
+        int firstCardIndex = 0;
+        for (int i = slotIndex; i >= 0; i--)
+        {
+            if (slots[i].GetCard() == null)
+            {
+                firstCardIndex = i + 1;
+                break;
+            }
+        }
+
+        if (firstCardIndex == 0)
+        {
+            ShiftCardsRightToMakeRoom(s);
+            return;
+        }
+
+        for (int i = firstCardIndex; i <= slotIndex; i++)
+        {
+            if (slots[i].GetCard() != null)
+            {
+                slots[i].GetCard().MoveCardToSlot(slots[i - 1], 0.1f, false);
+            }
+        }
+    }
+
+    void ShiftCardsRightToMakeRoom(Slot s)
+    {
+        int slotIndex = slots.IndexOf(s);
+
+        int lastCardIndex = slots.Count-1;
+        for (int i = slotIndex; i < slots.Count; i++)
+        {
+            if (slots[i].GetCard() == null)
+            {
+                lastCardIndex = i - 1;
+                break;
+            }
+        }
+
+        if (lastCardIndex == slots.Count - 1)
+        {
+            ShiftCardsLeftToMakeRoom(s);
+            return;
+        }
+
+        for (int i = lastCardIndex; i >= slotIndex; i--)
+        {
+            if (slots[i].GetCard() != null)
+            {
+                slots[i].GetCard().MoveCardToSlot(slots[i + 1], 0.1f, false);
+            }
+        }
     }
 
     public class TestResults

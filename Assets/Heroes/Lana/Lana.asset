@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1941b2391985924d902199a9db33850, type: 3}
+  m_Name: Lana
+  m_EditorClassIdentifier: 
+  basicSprite: {fileID: -7178249327439161646, guid: 0749a355ce95f8147ab563595666c97d, type: 3}
+  basicSpriteScaleFactor: 0.4
+  heroBody: {fileID: 0}
+  baseHP: 10

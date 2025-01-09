@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Sirenix.OdinInspector;
 using MoreMountains.Feedbacks;
+using System.Collections.Generic;
 
 public class Actor : MonoBehaviour, IDamagable
 {
@@ -17,6 +18,23 @@ public class Actor : MonoBehaviour, IDamagable
 
     public SpriteRenderer simpleSpriteRenderer;
     SpriteRenderer[] spriteRenderers;
+
+    [FoldoutGroup("Death")]
+    public GameObject deathVFXPrefab;
+    [FoldoutGroup("Death")]
+    public SFXInfo deathSFX;
+    [FoldoutGroup("Death")]
+    public MMF_Player deathFeel;
+
+    public delegate void ActorDeathDelegate(Actor dyingActor);
+    public static ActorDeathDelegate ActorDiedEvent;
+
+    public bool isDying = false;
+
+    [FoldoutGroup("Enemy")]
+    public List<EnemyAction> enemyActions;
+    [FoldoutGroup("Enemy")]
+    public int currentActionIndex = 0;
 
     void Awake()
     {
@@ -45,6 +63,31 @@ public class Actor : MonoBehaviour, IDamagable
     {
         health -= damage;
         UpdateHealthIndicators();
+        PlayStandardHitFeel();
+
+        Singleton.Instance.uiManager.SpawnDamageFloater(this.transform.position, damage);
+
+        if (health <= 0f)
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        if (deathVFXPrefab != null)
+        {
+            Instantiate(deathVFXPrefab, this.transform.position, Quaternion.identity);
+        }
+
+        if (deathFeel != null)
+        {
+            deathFeel.PlayFeedbacks();
+        }
+
+        deathSFX.Play();
+        isDying = true;
+        ActorDiedEvent?.Invoke(this);
     }
 
     public void SetHealthAndMaxHealth(float h)
@@ -58,7 +101,7 @@ public class Actor : MonoBehaviour, IDamagable
     void UpdateHealthIndicators()
     {
         healthBar.value = health / maxHealth;
-        healthText.text = ((int)health).ToString();
+        healthText.text = (Mathf.CeilToInt(health)).ToString();
     }
 
     public void PlayStandardHitFeel()

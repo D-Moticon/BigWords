@@ -20,6 +20,7 @@ public class Card : MonoBehaviour
     [SerializeReference]
     public List<CardEffect> cardEffects;
 
+    Slot slotBeforePickup;
     Slot currentSlot;
 
     BoxCollider2D bc2d;
@@ -28,6 +29,8 @@ public class Card : MonoBehaviour
 
     [FoldoutGroup("Feels")]
     [SerializeField] private MMF_Player simpleBumpFeel;
+    [FoldoutGroup("Feels")]
+    [SerializeField] private MMF_Player hoverFeel;
 
     [FoldoutGroup("SFX")]
     public SFXInfo attachtoSlotSFX;
@@ -105,7 +108,8 @@ public class Card : MonoBehaviour
     {
         if (currentSlot != null)
         {
-            currentSlot.RemoveTile();
+            slotBeforePickup = currentSlot;
+            currentSlot.RemoveCard();
         }
 
         currentSlot = null;
@@ -121,6 +125,11 @@ public class Card : MonoBehaviour
     {
         if (bc2d.OverlapPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)))
         {
+            if (Singleton.Instance.selectionHandler.currentlyHoveredCard != this)
+            {
+                hoverFeel.PlayFeedbacks();
+            }
+
             Singleton.Instance.selectionHandler.CardHovered(this);
         }
 
@@ -232,5 +241,20 @@ public class Card : MonoBehaviour
     public void SimpleBumpFeel()
     {
         simpleBumpFeel.PlayFeedbacks();
+    }
+
+    public IEnumerator TriggerCard(AttackInfo attackInfo)
+    {
+        for (int j = 0; j < cardEffects.Count; j++)
+        {
+            Task effectTask = new Task(cardEffects[j].CardActivatedEffect(attackInfo));
+
+            while (effectTask.Running)
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 }

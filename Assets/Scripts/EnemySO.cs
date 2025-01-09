@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "EnemySO", menuName = "Scriptable Objects/EnemySO")]
 public class EnemySO : ScriptableObject
@@ -6,6 +7,7 @@ public class EnemySO : ScriptableObject
     public string enemyName;
     public Sprite sprite;
     public GameObject enemyBody;
+    [SerializeReference] public List<EnemyAction> enemyActions;
 
     public Actor CreateEnemyFromSO()
     {
@@ -28,6 +30,8 @@ public class EnemySO : ScriptableObject
             enemy.simpleSpriteRenderer.sprite = null;
             enemy.simpleSpriteRenderer.enabled = false;
         }
+
+        enemy.enemyActions = new List<EnemyAction>(enemyActions);
 
         return enemy;
     }

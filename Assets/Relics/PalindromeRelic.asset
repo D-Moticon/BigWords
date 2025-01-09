@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 801d8277bbf86a9478adece113cc67fc, type: 3}
+  m_Name: PalindromeRelic
+  m_EditorClassIdentifier: 
+  relicName: Palinilap
+  relicDescription: Retrigger palindromes backwards
+  relicSprite: {fileID: 1705615154, guid: 6582f34ddd5f686408c019550cd94c9d, type: 3}
+  relicSFX:
+    sfx:
+      Guid:
+        Data1: -1408716350
+        Data2: 1332943764
+        Data3: -1921974850
+        Data4: 1365341124
+      Path: event:/SFX/CardCountMult_06
+    vol: 0.5

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f18ab0df1e2504342a9540eb29fa4594, type: 3}
+  m_Name: RivetGun
+  m_EditorClassIdentifier: 
+  cardName: Rivet Gun
+  cardArt: {fileID: 4592855279305038396, guid: 69ee90b248f3ae741ad246ed067b4768, type: 3}
+  cardEffects:
+  - rid: 6827158163702415859
+  references:
+    version: 2
+    RefIds:
+    - rid: 6827158163702415859
+      type: {class: DamagingProjectileEffect, ns: , asm: Assembly-CSharp}
+      data:
+        owningCard: {fileID: 0}
+        feelPlayerPrefab: {fileID: 8635747216109465816, guid: a4a70400becfcaf429342370944b594b, type: 3}
+        feelPlayer: {fileID: 0}
+        projectilePrefab: {fileID: 6465158621303419580, guid: d1cd9307ea5861b4bbce90ec48873e81, type: 3}
+        numberProjectiles: 1
+        muzzleVFX: {fileID: 0}
+        shotSFX:
+          sfx:
+            Guid:
+              Data1: -9184284
+              Data2: 1211867414
+              Data3: -1674209643
+              Data4: 502815184
+            Path: event:/SFX/RivetGunShot
+          vol: 0.5
+        impactVFX: {fileID: 11400000, guid: e712d4ba7146a064d9bd8afcb3df13a9, type: 2}
+        impactSFX:
+          sfx:
+            Guid:
+              Data1: -831959806
+              Data2: 1232527246
+              Data3: 841038014
+              Data4: 455874919
+            Path: event:/SFX/HeavyStrike
+          vol: 0.5
+        damage: 1
+        projectileSpeed: 150
+        waitForProjectileImpact: 1
+        shotToDamageDuration: 0.03
