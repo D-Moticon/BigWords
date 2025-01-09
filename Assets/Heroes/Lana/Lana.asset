@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Lana
   m_EditorClassIdentifier: 
   basicSprite: {fileID: -7178249327439161646, guid: 0749a355ce95f8147ab563595666c97d, type: 3}
-  basicSpriteScaleFactor: 0.4
+  basicSpriteScaleFactor: 0.35
   heroBody: {fileID: 0}
-  baseHP: 10
+  baseHP: 15

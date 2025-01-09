@@ -14,12 +14,14 @@ public class Relic : MonoBehaviour
     {
         GameManager.CardTriggeredEvent += CardTriggered;
         GameManager.AttackCompletedEvent += AttackCompleted;
+        Actor.ActorDiedEvent += ActorDiedListener;
     }
 
     private void OnDisable()
     {
         GameManager.CardTriggeredEvent -= CardTriggered;
         GameManager.AttackCompletedEvent -= AttackCompleted;
+        Actor.ActorDiedEvent -= ActorDiedListener;
     }
 
     public void PlayFeelAndSFX()
@@ -41,6 +43,11 @@ public class Relic : MonoBehaviour
     public virtual void AttackCompleted(ref List<IEnumerator> tasksToPerform, AttackInfo attackInfo)
     {
         relicSO.AttackCompleted(this, ref tasksToPerform, attackInfo);
+    }
+
+    public virtual void ActorDiedListener(Actor dyingActor, ref List<IEnumerator> tasksToPerform)
+    {
+        relicSO.ActorDied(this, dyingActor, ref tasksToPerform);
     }
 
     public static Relic CreateRelicFromSO(RelicSO rso)

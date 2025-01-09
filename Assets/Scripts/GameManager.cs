@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     public List<RelicSO> playerStartingRelics;
     public Transform relicLocation;
     public float relicSpacing = 1f;
+    public float playerCoins = 0f;
 
     public Transform playerCenterLocation;
     public Transform enemyCenterLocation;
@@ -65,9 +66,16 @@ public class GameManager : MonoBehaviour
     public TMP_Text discardsText;
     [FoldoutGroup("UI")]
     public TMP_Text cardCountMultiplierText;
+    [FoldoutGroup("UI")]
+    public TMP_Text playerCoinsText;
 
     [FoldoutGroup("SFX")]
     public SFXInfo[] cardCountMultiplierSFX;
+    [FoldoutGroup("SFX")]
+    public SFXInfo shuffleSFX;
+
+    [FoldoutGroup("Prefabs")]
+    public PooledObjectData coinPickup;
 
     [FoldoutGroup("UpdatedAtRuntime")]
     public Actor player;
@@ -87,6 +95,8 @@ public class GameManager : MonoBehaviour
     public static event CardTaskDelegate CardTriggeredEvent;
     public delegate void AttackInfoDelegate(ref List<IEnumerator> tasksToPerform, AttackInfo attackInfo);
     public static event AttackInfoDelegate AttackCompletedEvent;
+
+    AttackInfo currentAttackInfo;
 
     public class TaskParams
     {
@@ -207,6 +217,11 @@ public class GameManager : MonoBehaviour
             gameManager.StartCoroutine(DrawCards());
 
             gameManager.cardCountMultiplierText.text = $"x1";
+
+            if (gameManager.currentlyTargetedActor == null)
+            {
+                gameManager.TargetFirstValidEnemy();
+            }
         }
 
         public override void Exit()
@@ -317,7 +332,7 @@ public class GameManager : MonoBehaviour
 
         IEnumerator AttackProcessCoroutine()
         {
-            AttackInfo attackInfo = new AttackInfo();
+            gameManager.currentAttackInfo = new AttackInfo();
 
             Rack.TestResults rackTest = playerRack.TestRack();
             if (!rackTest.isValidWord)
@@ -326,24 +341,24 @@ public class GameManager : MonoBehaviour
                 yield break;
             }
 
-            attackInfo.source = player;
-            attackInfo.target = gameManager.currentlyTargetedActor;
-            attackInfo.sourcePosition = player.transform.position;
-            attackInfo.targetPosition = gameManager.currentlyTargetedActor.transform.position;
-            attackInfo.cards = rackTest.cards;
-            attackInfo.word = rackTest.word;
-            attackInfo.wordChars = rackTest.wordChars;
-            attackInfo.cardCount = rackTest.cards.Count;
+            gameManager.currentAttackInfo.source = player;
+            gameManager.currentAttackInfo.target = gameManager.currentlyTargetedActor;
+            gameManager.currentAttackInfo.sourcePosition = player.transform.position;
+            gameManager.currentAttackInfo.targetPosition = gameManager.currentlyTargetedActor.transform.position;
+            gameManager.currentAttackInfo.cards = rackTest.cards;
+            gameManager.currentAttackInfo.word = rackTest.word;
+            gameManager.currentAttackInfo.wordChars = rackTest.wordChars;
+            gameManager.currentAttackInfo.cardCount = rackTest.cards.Count;
 
             //Card Count Multiplier
             float cardCountMultiplier = 1f;
             gameManager.cardCountMultiplierText.text = "";
-            for (int i = 0; i < attackInfo.cards.Count; i++)
+            for (int i = 0; i < gameManager.currentAttackInfo.cards.Count; i++)
             {
                 cardCountMultiplier += gameManager.multAddPerCardCount;
                 gameManager.cardCountMultiplierText.text = $"x{cardCountMultiplier}";
                 gameManager.cardCountMultiplierText.GetComponentInChildren<MMF_Player>().PlayFeedbacks();
-                attackInfo.cards[i].SimpleBumpFeel();
+                gameManager.currentAttackInfo.cards[i].MultiplierCountFeel();
 
                 if (i < gameManager.cardCountMultiplierSFX.Length)
                 {
@@ -358,14 +373,14 @@ public class GameManager : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
             }
 
-            attackInfo.cardCountMultiplier = cardCountMultiplier;
+            gameManager.currentAttackInfo.cardCountMultiplier = cardCountMultiplier;
 
             yield return new WaitForSeconds(0.5f);
 
             //Trigger Cards
-            for (int i = 0; i < attackInfo.cards.Count; i++)
+            for (int i = 0; i < gameManager.currentAttackInfo.cards.Count; i++)
             {
-                Task cardTask = new Task(attackInfo.cards[i].TriggerCard(attackInfo));
+                Task cardTask = new Task(gameManager.currentAttackInfo.cards[i].TriggerCard(gameManager.currentAttackInfo));
                 while (cardTask.Running)
                 {
                     yield return null;
@@ -373,7 +388,7 @@ public class GameManager : MonoBehaviour
 
                 //Call for any relics/cards that need to be activated on Card Trigger
                 List<IEnumerator> cardTriggeredTasks = new List<IEnumerator>();
-                CardTriggeredEvent?.Invoke(ref cardTriggeredTasks, attackInfo.cards[i]);
+                CardTriggeredEvent?.Invoke(ref cardTriggeredTasks, gameManager.currentAttackInfo.cards[i]);
 
                 for (int j = 0; j < cardTriggeredTasks.Count; j++)
                 {
@@ -389,7 +404,7 @@ public class GameManager : MonoBehaviour
 
             //Attack Completed Tasks
             List<IEnumerator> attackCompletedTasks = new List<IEnumerator>();
-            AttackCompletedEvent?.Invoke(ref attackCompletedTasks, attackInfo);
+            AttackCompletedEvent?.Invoke(ref attackCompletedTasks, gameManager.currentAttackInfo);
             for (int j = 0; j < attackCompletedTasks.Count; j++)
             {
                 Task t = new Task(attackCompletedTasks[j]);
@@ -401,13 +416,13 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(0.4f);
 
-            for (int i = 0; i < attackInfo.cards.Count; i++)
+            for (int i = 0; i < gameManager.currentAttackInfo.cards.Count; i++)
             {
-                attackInfo.cards[i].MoveCardToDeck(discardPile);
+                gameManager.currentAttackInfo.cards[i].MoveCardToDeck(discardPile);
                 yield return new WaitForSeconds(0.1f);
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.0f);
 
             isComplete = true;
         }
@@ -462,6 +477,7 @@ public class GameManager : MonoBehaviour
     public void ShufflePlayerHand()
     {
         playerHand.Shuffle();
+        shuffleSFX.Play();
     }
 
     public bool TryDiscard(Card c)
@@ -481,6 +497,7 @@ public class GameManager : MonoBehaviour
     void UpdateUI()
     {
         discardsText.text = discardsRemaining.ToString();
+        playerCoinsText.text = Mathf.FloorToInt(playerCoins).ToString();
     }
 
     public static IEnumerator TriggerRackBackwards(Relic relicInstance, AttackInfo attackInfo)
@@ -510,12 +527,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ActorDiedListener(Actor actor)
+    public void ActorDiedListener(Actor actor, ref List<IEnumerator> tasksToPerform)
     {
-        if (actor == currentlyTargetedActor)
+        /*if (actor == currentlyTargetedActor)
         {
             TargetFirstValidEnemy();
-        }
+        }*/
 
         if (enemies.Contains(actor))
         {
@@ -534,11 +551,23 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            currentlyTargetedActor = enemies[i];
-            currentlyTargetedActor.SelectActor();
+            Singleton.Instance.selectionHandler.TargetActor(enemies[i]);
+
+            if (currentAttackInfo != null)
+            {
+                currentAttackInfo.target = currentlyTargetedActor;
+                currentAttackInfo.targetPosition = currentlyTargetedActor.transform.position;
+            }
+
             return;
         }
 
         currentlyTargetedActor = null;
+    }
+
+    public void AddCoinsToPlayer(int coinAmount)
+    {
+        playerCoins += coinAmount;
+        UpdateUI();
     }
 }

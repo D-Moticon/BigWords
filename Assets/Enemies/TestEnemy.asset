@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: TestEnemy
   m_EditorClassIdentifier: 
   enemyName: Testy
-  sprite: {fileID: 5524590292671962877, guid: f7043b7291f49844b9671b3d3dedcbb5, type: 3}
+  sprite: {fileID: -6937331644980438540, guid: 31a9c428db2b7144bb2b0e8917a13cd9, type: 3}
+  basicSpriteScaleFactor: 0.4
   enemyBody: {fileID: 0}
+  coinsToDrop: 3
   enemyActions:
   - rid: 6827158185834446973
   references:

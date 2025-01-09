@@ -11,7 +11,7 @@ public class DealDamageEffect : CardEffect
     {
         float finalDamage = damage * attackInfo.cardCountMultiplier;
 
-        attackInfo.target.Damage(finalDamage);
+        Task t = new Task(attackInfo.target.Damage(finalDamage));
 
         if (feelPlayer != null)
         {
@@ -21,7 +21,11 @@ public class DealDamageEffect : CardEffect
         }
 
         impactSFX.Play();
-        Debug.Log($"{attackInfo.source} used {owningCard.GetCardName()} to damage {attackInfo.target} for {finalDamage}");
+
+        while (t.Running)
+        {
+            yield return null;
+        }
     }
 
     public override string GetEffectDescription()

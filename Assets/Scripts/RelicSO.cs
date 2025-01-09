@@ -17,6 +17,8 @@ public abstract class RelicSO : ScriptableObject
     public virtual void CardTriggered(Relic relicInstance, ref List<IEnumerator> tasksToPerform, Card c) { }
     public virtual void AttackCompleted(Relic relicInstance, ref List<IEnumerator> tasksToPerform, AttackInfo attackInfo) { }
 
+    public virtual void ActorDied(Relic relicInstance, Actor dyingActor, ref List<IEnumerator> tasksToPerform) { }
+
     public virtual string GetRelicName()
     {
         return relicName;

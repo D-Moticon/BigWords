@@ -4,14 +4,15 @@ using TMPro;
 using Sirenix.OdinInspector;
 using MoreMountains.Feedbacks;
 using System.Collections.Generic;
+using System.Collections;
 
-public class Actor : MonoBehaviour, IDamagable
+public class Actor : MonoBehaviour
 {
     public float health = 10f;
     public float maxHealth = 10f;
     public Slider healthBar;
     public TMP_Text healthText;
-    public Collider2D col;
+    public BoxCollider2D col;
 
     [FoldoutGroup("Feels")]
     public MMF_Player standardHitFeel;
@@ -26,7 +27,7 @@ public class Actor : MonoBehaviour, IDamagable
     [FoldoutGroup("Death")]
     public MMF_Player deathFeel;
 
-    public delegate void ActorDeathDelegate(Actor dyingActor);
+    public delegate void ActorDeathDelegate(Actor dyingActor, ref List<IEnumerator> tasksToPerform);
     public static ActorDeathDelegate ActorDiedEvent;
 
     public bool isDying = false;
@@ -35,6 +36,8 @@ public class Actor : MonoBehaviour, IDamagable
     public List<EnemyAction> enemyActions;
     [FoldoutGroup("Enemy")]
     public int currentActionIndex = 0;
+    [FoldoutGroup("Enemy")]
+    public int coinsToDrop = 0;
 
     void Awake()
     {
@@ -59,7 +62,7 @@ public class Actor : MonoBehaviour, IDamagable
         }
     }
 
-    public void Damage(float damage)
+    public IEnumerator Damage(float damage)
     {
         health -= damage;
         UpdateHealthIndicators();
@@ -69,11 +72,17 @@ public class Actor : MonoBehaviour, IDamagable
 
         if (health <= 0f)
         {
-            Die();
+            Task dieTask = new Task(Die());
+            while (dieTask.Running)
+            {
+                yield return null;
+            }
         }
+
+        yield break;
     }
 
-    public void Die()
+    public IEnumerator Die()
     {
         if (deathVFXPrefab != null)
         {
@@ -85,9 +94,30 @@ public class Actor : MonoBehaviour, IDamagable
             deathFeel.PlayFeedbacks();
         }
 
+        if (coinsToDrop > 0)
+        {
+            for (int i = 0; i < coinsToDrop; i++)
+            {
+                GameObject go = Singleton.Instance.gameManager.coinPickup.Spawn(this.transform.position, Quaternion.identity);
+                Pickup p = go.GetComponent<Pickup>();
+                p.InitializePickup(this.transform.position, Singleton.Instance.gameManager.player);
+            }
+        }
+
         deathSFX.Play();
         isDying = true;
-        ActorDiedEvent?.Invoke(this);
+
+        List<IEnumerator> tasksToPerform = new List<IEnumerator>();
+        ActorDiedEvent?.Invoke(this, ref tasksToPerform);
+
+        for (int j = 0; j < tasksToPerform.Count; j++)
+        {
+            Task t = new Task(tasksToPerform[j]);
+            while (t.Running)
+            {
+                yield return null;
+            }
+        }
     }
 
     public void SetHealthAndMaxHealth(float h)
@@ -95,6 +125,8 @@ public class Actor : MonoBehaviour, IDamagable
         health = h;
         maxHealth = h;
         UpdateHealthIndicators();
+
+        print(h);
     }
 
 
@@ -128,7 +160,7 @@ public class Actor : MonoBehaviour, IDamagable
         {
             MaterialPropertyBlock mpb = new MaterialPropertyBlock();
             sr.GetPropertyBlock(mpb);
-            mpb.SetFloat("_PixelOutlineFade", amount);
+            mpb.SetFloat("_OuterOutlineFade", amount);
             sr.SetPropertyBlock(mpb);
         }
     }

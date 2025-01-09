@@ -66,8 +66,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BlendHeight: 2.18
-    - _Brightness: 0.7
+    - _BlendHeight: 3.9
+    - _Brightness: 1.56
     - _Contrast: 2.2
     - _EnableExternalAlpha: 0
     - _GradientPower: 1

@@ -14,6 +14,7 @@ public class HeroSO : ScriptableObject
         actor.simpleSpriteRenderer.sprite = basicSprite;
         actor.simpleSpriteRenderer.transform.localScale = new Vector3(basicSpriteScaleFactor, basicSpriteScaleFactor, 1f);
         actor.healthBar.transform.localPosition = new Vector2(0f, actor.simpleSpriteRenderer.bounds.size.y / 2f * 65f);
+        actor.SetHealthAndMaxHealth(baseHP);
 
         return actor;
     }

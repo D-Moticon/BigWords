@@ -33,7 +33,11 @@ public class ExtraHitRelic : RelicSO
 
         yield return new WaitForSeconds(0.1f);
 
-        Singleton.Instance.gameManager.currentlyTargetedActor.Damage(damage);
+        Task t = new Task(Singleton.Instance.gameManager.currentlyTargetedActor.Damage(damage));
+        while (t.Running)
+        {
+            yield return null;
+        }
     }
 
     public override string GetRelicDescription()

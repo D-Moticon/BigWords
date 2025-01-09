@@ -405,7 +405,7 @@ MonoBehaviour:
         RepeatUntilStopped: 0
         CameraShakeProperties:
           Duration: 0.2
-          Amplitude: 0.2
+          Amplitude: 1
           Frequency: 40
           AmplitudeX: 1
           AmplitudeY: 1
@@ -497,7 +497,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.537
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -878,8 +878,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282993151
-  m_fontColor: {r: 1, g: 0.28627452, b: 0.28627452, a: 1}
+    rgba: 4282137808
+  m_fontColor: {r: 0.816, g: 0.23360004, b: 0.23360004, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1033,8 +1033,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7343439701435704115
 GameObject:
@@ -1178,6 +1178,8 @@ MonoBehaviour:
     vol: 0.5
   deathFeel: {fileID: 5435604367777995560}
   isDying: 0
+  currentActionIndex: 0
+  coinsToDrop: 0
 --- !u!61 &1779826846336588543
 BoxCollider2D:
   m_ObjectHideFlags: 0

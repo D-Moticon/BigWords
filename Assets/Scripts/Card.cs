@@ -28,7 +28,7 @@ public class Card : MonoBehaviour
     Coroutine currentMoveCoroutine;
 
     [FoldoutGroup("Feels")]
-    [SerializeField] private MMF_Player simpleBumpFeel;
+    [SerializeField] private MMF_Player multiplierCountFeel;
     [FoldoutGroup("Feels")]
     [SerializeField] private MMF_Player hoverFeel;
 
@@ -125,7 +125,7 @@ public class Card : MonoBehaviour
     {
         if (bc2d.OverlapPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)))
         {
-            if (Singleton.Instance.selectionHandler.currentlyHoveredCard != this)
+            if (Singleton.Instance.selectionHandler.currentlyHoveredCard != this && Singleton.Instance.selectionHandler.currentlyHeldCard == null)
             {
                 hoverFeel.PlayFeedbacks();
             }
@@ -238,9 +238,9 @@ public class Card : MonoBehaviour
         }
     }
 
-    public void SimpleBumpFeel()
+    public void MultiplierCountFeel()
     {
-        simpleBumpFeel.PlayFeedbacks();
+        multiplierCountFeel.PlayFeedbacks();
     }
 
     public IEnumerator TriggerCard(AttackInfo attackInfo)
