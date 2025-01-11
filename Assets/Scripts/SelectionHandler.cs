@@ -4,14 +4,29 @@ public class SelectionHandler : MonoBehaviour
 {
     public Card currentlyHeldCard;
     public Card currentlyHoveredCard;
+    public Relic currentlyHoveredRelic;
     Slot currentlyHoveredSlot;
     Actor currentlyHoveredActor;
     Actor currentlyTargetedActor;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnEnable()
     {
-        
+        Card.cardHoveredEvent += CardHoveredListener;
+        Card.cardDeHoveredEvent += CardDeHoveredListener;
+        Card.cardClickedEvent += CardClickedListener;
+        Relic.relicHoveredEvent += RelicHoveredListener;
+        Relic.relicDeHoveredEvent += RelicDeHoveredListener;
+        Relic.relicClickedEvent += RelicClickedListener;
+    }
+
+    private void OnDisable()
+    {
+        Card.cardHoveredEvent -= CardHoveredListener;
+        Card.cardDeHoveredEvent -= CardDeHoveredListener;
+        Card.cardClickedEvent -= CardClickedListener;
+        Relic.relicHoveredEvent -= RelicHoveredListener;
+        Relic.relicDeHoveredEvent -= RelicDeHoveredListener;
+        Relic.relicClickedEvent -= RelicClickedListener;
     }
 
     // Update is called once per frame
@@ -33,12 +48,6 @@ public class SelectionHandler : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (currentlyHoveredCard != null)
-            {
-                currentlyHeldCard = currentlyHoveredCard;
-                currentlyHeldCard.RemoveFromSlot();
-            }
-
             if (currentlyHoveredActor != null)
             {
                 TargetActor(currentlyHoveredActor);
@@ -77,17 +86,41 @@ public class SelectionHandler : MonoBehaviour
         currentlyHoveredSlot = slot;
     }
 
-    public void CardHovered(Card card)
+    public void CardHoveredListener(Card card)
     {
         currentlyHoveredCard = card;
     }
 
-    public void CardNotHovered(Card card)
+    public void CardDeHoveredListener(Card card)
     {
         if (card == currentlyHoveredCard)
         {
             currentlyHoveredCard = null;
         }
+    }
+
+    public void CardClickedListener(Card card)
+    {
+        currentlyHeldCard = card;
+        currentlyHeldCard.RemoveFromSlot();
+    }
+
+    public void RelicHoveredListener(Relic relic)
+    {
+        currentlyHoveredRelic = relic;
+    }
+
+    public void RelicDeHoveredListener(Relic relic)
+    {
+        if (relic == currentlyHoveredRelic)
+        {
+            currentlyHoveredRelic = null;
+        }
+    }
+
+    public void RelicClickedListener(Relic relic)
+    {
+
     }
 
     public void ActorHovered(Actor actor)
@@ -117,5 +150,7 @@ public class SelectionHandler : MonoBehaviour
 
         actor.SelectActor();
         Singleton.Instance.gameManager.currentlyTargetedActor = actor;
+        Singleton.Instance.gameManager.targetedActorPosition = actor.transform.position;
     }
+
 }

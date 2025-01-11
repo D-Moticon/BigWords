@@ -566,7 +566,7 @@ MonoBehaviour:
         Owner: {fileID: 3441784559458638434}
         DebugActive: 0
         TargetTMPText: {fileID: 953879947956527097}
-        AlphaMode: 1
+        AlphaMode: 2
         Duration: 1
         InstantAlpha: 1
         Curve:

@@ -4,14 +4,14 @@ using System.Linq;
 
 public class Deck : MonoBehaviour
 {
-    public List<Card> allCards;
+    public List<Card> permanentCards;
     public List<Card> currentCards;
 
-    public void AddCard(Card card)
+    public void AddCardPermanently(Card card)
     {
-        if (allCards == null)
+        if (permanentCards == null)
         {
-            allCards = new List<Card>();
+            permanentCards = new List<Card>();
         }
 
         if (currentCards == null)
@@ -19,9 +19,22 @@ public class Deck : MonoBehaviour
             currentCards = new List<Card>();
         }
 
-        if (!allCards.Contains(card))
+        if (!permanentCards.Contains(card))
         {
-            allCards.Add(card);
+            permanentCards.Add(card);
+        }
+
+        if (!currentCards.Contains(card))
+        {
+            currentCards.Add(card);
+        }
+    }
+
+    public void AddCardTemporarily(Card card)
+    {
+        if (currentCards == null)
+        {
+            currentCards = new List<Card>();
         }
 
         if (!currentCards.Contains(card))

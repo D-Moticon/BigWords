@@ -5,15 +5,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PalindromeRelic", menuName = "Relics/Palindrome")]
 public class PalindromeRelic : RelicSO
 {
-    public override void AttackCompleted(Relic relicInstance, ref List<IEnumerator> tasksToPerform, AttackInfo attackInfo)
+    public override void AttackCompleted(Relic relicInstance, ref List<IEnumerator> tasksToPerform, EffectParams effectParams)
     {
-        base.AttackCompleted(relicInstance, ref tasksToPerform, attackInfo);
+        base.AttackCompleted(relicInstance, ref tasksToPerform, effectParams);
 
-        if (IsPalindrome(attackInfo.wordChars))
+        if (IsPalindrome(effectParams.attackingWordChars))
         {
             PlayFeelAndSFX();
-            Debug.Log($"{relicName} activated on palindrome {attackInfo.word}");
-            tasksToPerform.Add(GameManager.TriggerRackBackwards(relicInstance, attackInfo));
+            Debug.Log($"{relicName} activated on palindrome {effectParams.attackingWord}");
+            tasksToPerform.Add(GameManager.TriggerRack(Phase.cardActivate, false));
         }
     }
 

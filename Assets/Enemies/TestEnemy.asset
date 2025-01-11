@@ -18,45 +18,21 @@ MonoBehaviour:
   enemyBody: {fileID: 0}
   coinsToDrop: 3
   enemyActions:
-  - rid: 6827158185834446973
+  - rid: 6827158185834447357
   references:
     version: 2
     RefIds:
-    - rid: 6827158185834446973
-      type: {class: CardEffectEnemyAction, ns: , asm: Assembly-CSharp}
+    - rid: 6827158185834447357
+      type: {class: EffectEnemyAction, ns: , asm: Assembly-CSharp}
       data:
         targetType: 0
-        cardEffect:
-          rid: 6827158185834446975
-    - rid: 6827158185834446975
-      type: {class: DamagingProjectileEffect, ns: , asm: Assembly-CSharp}
+        effect:
+          rid: 6827158185834447358
+    - rid: 6827158185834447358
+      type: {class: ShootProjectileEffect, ns: , asm: Assembly-CSharp}
       data:
-        owningCard: {fileID: 0}
-        feelPlayerPrefab: {fileID: 8635747216109465816, guid: a4a70400becfcaf429342370944b594b, type: 3}
-        feelPlayer: {fileID: 0}
-        projectilePrefab: {fileID: 6465158621303419580, guid: d1cd9307ea5861b4bbce90ec48873e81, type: 3}
-        numberProjectiles: 1
-        muzzleVFX: {fileID: 0}
-        shotSFX:
-          sfx:
-            Guid:
-              Data1: 0
-              Data2: 0
-              Data3: 0
-              Data4: 0
-            Path: 
-          vol: 0.5
-        impactVFX: {fileID: 11400000, guid: e712d4ba7146a064d9bd8afcb3df13a9, type: 2}
-        impactSFX:
-          sfx:
-            Guid:
-              Data1: -1963977612
-              Data2: 1310067309
-              Data3: 239817088
-              Data4: 71640443
-            Path: event:/SFX/Strike
-          vol: 0.5
-        damage: 2
-        projectileSpeed: 150
-        waitForProjectileImpact: 1
-        shotToDamageDuration: 0.1
+        activationPhase: 0
+        projectileSO: {fileID: 11400000, guid: 3081d9e136546f14f9652c031ddb489d, type: 2}
+        baseDamage: 1
+        multiplyByCardCountMult: 0
+        multiplyByCardPower: 0

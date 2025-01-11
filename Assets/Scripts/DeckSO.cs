@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 
 [CreateAssetMenu(fileName = "DeckSO", menuName = "Scriptable Objects/DeckSO")]
 public class DeckSO : ScriptableObject
@@ -11,6 +12,9 @@ public class DeckSO : ScriptableObject
     {
         public CardSO card;
         public char letter;
+        public bool overridePower = false;
+        [ShowIf("@overridePower == true")]
+        public float power = 1f;
         public int quantity;
     }
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{f2b06f08-5bea-41db-b24f-b7e13c8fdf57}">
+		<property name="assetPath">
+			<value>SFX/BlacksmithHit001.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>2.3124943310657597</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6825f207-e024-437f-be50-434ce430d6ad}</destination>
+		</relationship>
+	</object>
+</objects>

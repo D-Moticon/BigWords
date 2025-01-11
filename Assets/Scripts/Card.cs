@@ -6,19 +6,23 @@ using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine.UI;
 
-public class Card : MonoBehaviour
+public class Card : MonoBehaviour, IBuyable
 {
     [SerializeField] private string cardName;
     [SerializeField] private TMP_Text cardNameText;
+    public CardSO cardSO;
+    private CardType cardType;
     [SerializeField] private Image cardImageRenderer;
     [SerializeField] private Vector2 cardSpriteSize = new Vector2(4f, 3f);
     [SerializeField] public char letter;
+    [SerializeField] private float power = 1f;
+    [SerializeField] private bool hasPower = false;
     [SerializeField] private TMP_Text letterText;
-    [SerializeField] private Transform effectTextParent;
-    [SerializeField] private TMP_Text effectTextPrefab;
-
-    [SerializeReference]
-    public List<CardEffect> cardEffects;
+    [SerializeField] private TMP_Text powerText;
+    [SerializeField] private GameObject powerParent;
+    [SerializeField] private Transform descriptionTextParent;
+    [SerializeField] private TMP_Text descriptionText;
+    public List<Effect> cardEffects;
 
     Slot slotBeforePickup;
     Slot currentSlot;
@@ -31,9 +35,20 @@ public class Card : MonoBehaviour
     [SerializeField] private MMF_Player multiplierCountFeel;
     [FoldoutGroup("Feels")]
     [SerializeField] private MMF_Player hoverFeel;
+    [FoldoutGroup("Feels")]
+    [SerializeField] private MMF_Player powerFeel;
+    [FoldoutGroup("Feels")]
+    [SerializeField] private MMF_Player standardBumpFeel;
 
     [FoldoutGroup("SFX")]
     public SFXInfo attachtoSlotSFX;
+
+    public delegate void CardDelegate(Card c);
+    public static event CardDelegate cardHoveredEvent;
+    public static event CardDelegate cardDeHoveredEvent;
+    public static event CardDelegate cardClickedEvent;
+
+    public float basePrice = 0f;
 
     public char GetLetter()
     {
@@ -58,6 +73,11 @@ public class Card : MonoBehaviour
         cardNameText.text = newName;
     }
 
+    public void SetCardDescription(string description)
+    {
+        descriptionText.text = description;
+    }
+
     public void SetCardImage(Sprite newIMG)
     {
         cardImageRenderer.sprite = newIMG;
@@ -70,7 +90,7 @@ public class Card : MonoBehaviour
         return cardName;
     }
 
-    public void AddCardEffect(CardEffect cardEffect)
+    /*public void AddCardEffect(CardEffect cardEffect)
     {
         // effect is of type CardEffect, so we need the concrete type
         // If CardEffect is not a ScriptableObject, this can work directly:
@@ -93,16 +113,7 @@ public class Card : MonoBehaviour
         }
 
         copiedEffect.owningCard = this;
-    }
-
-    public void ClearEffectTexts()
-    {
-        TMP_Text[] existingTexts = effectTextParent.GetComponentsInChildren<TMP_Text>();
-        foreach (TMP_Text t in existingTexts)
-        {
-            Destroy(t.gameObject);
-        }
-    }
+    }*/
 
     public void RemoveFromSlot()
     {
@@ -130,12 +141,17 @@ public class Card : MonoBehaviour
                 hoverFeel.PlayFeedbacks();
             }
 
-            Singleton.Instance.selectionHandler.CardHovered(this);
+            cardHoveredEvent?.Invoke(this);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                CardClicked();
+            }
         }
 
         else
         {
-            Singleton.Instance.selectionHandler.CardNotHovered(this);
+            cardDeHoveredEvent?.Invoke(this);
         }
     }
 
@@ -168,7 +184,7 @@ public class Card : MonoBehaviour
     {
         Vector3 pos = d.transform.position;
 
-        d.AddCard(this);
+        d.AddCardTemporarily(this);
         MoveCardLerp(pos, duration, null, d, playSFX);
     }
 
@@ -243,11 +259,24 @@ public class Card : MonoBehaviour
         multiplierCountFeel.PlayFeedbacks();
     }
 
-    public IEnumerator TriggerCard(AttackInfo attackInfo)
+    public void StandardBumpFeel()
     {
+        standardBumpFeel.PlayFeedbacks();
+    }
+
+    public IEnumerator ActivateEffects(EffectParams effectParams)
+    {
+        EffectParams eParams = effectParams.Copy();
+        eParams.sourceCard = this;
+
         for (int j = 0; j < cardEffects.Count; j++)
         {
-            Task effectTask = new Task(cardEffects[j].CardActivatedEffect(attackInfo));
+            if(cardEffects[j].activationPhase != effectParams.phase)
+            {
+                continue;
+            }
+
+            Task effectTask = new Task(cardEffects[j].GetEffectTask(eParams));
 
             while (effectTask.Running)
             {
@@ -257,4 +286,97 @@ public class Card : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
+
+    public float GetPower()
+    {
+        return power;
+    }
+
+    public string GetPowerString()
+    {
+        return (Helpers.RoundToDecimal(power, 1).ToString());
+    }
+
+    public void SetPower(float newPower)
+    {
+        power = newPower;
+        powerText.text = GetPowerString();
+    }
+
+    public IEnumerator AddPower(float powerAdd)
+    {
+        power += powerAdd;
+        powerText.text = GetPowerString();
+        powerFeel.PlayFeedbacks();
+
+        Singleton.Instance.uiManager.SpawnGenericFloater(powerText.transform.position, $"+{Helpers.RoundToDecimal(powerAdd,1)}");
+
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    public void SetHasPower(bool val)
+    {
+        hasPower = val;
+
+        if (val)
+        {
+            powerParent.SetActive(true);
+        }
+
+        else
+        {
+            powerParent.SetActive(false);
+        }
+    }
+
+    public bool GetHasPower()
+    {
+        return hasPower;
+    }
+
+    public void SetCardType(CardType newType)
+    {
+        cardType = newType;
+        TypeColorize[] tcs = GetComponentsInChildren<TypeColorize>();
+        foreach (TypeColorize tc in tcs)
+        {
+            tc.ColorizeHue(newType.cardTypeColor);
+        }
+    }
+
+    public void CardClicked()
+    {
+        cardClickedEvent?.Invoke(this);
+        BuyableEvents.BuyableClicked(this);
+    }
+
+    public float GetBasePrice()
+    {
+        return basePrice;
+    }
+
+    public float GetFinalPrice()
+    {
+        float finalPrice = basePrice;
+        BuyableEvents.GetFinalPrice(this, ref basePrice, basePrice);
+
+        return finalPrice;
+    }
+
+    public void BuySuccessful()
+    {
+        Singleton.Instance.gameManager.playerDeck.AddCardPermanently(this);
+    }
+
+    public static Card CreateCardFromSO(CardSO cso, char letter = 'A', float power = 1f)
+    {
+        return(Singleton.Instance.cardCreator.CreateCardFromSO(cso, letter, power));
+    }
+
+    public Vector2 GetLocalPriceTagPosition()
+    {
+        return new Vector2(0f, 3.0f);
+    }
+
+    
 }

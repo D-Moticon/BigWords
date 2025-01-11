@@ -183,4 +183,35 @@ public static class Helpers
         float multiplier = Mathf.Pow(10, decimalPlaces);
         return Mathf.Round(value * multiplier) / multiplier;
     }
+
+    public static List<T> GetRandomElements<T>(this List<T> source, int quantity, List<T> exclude = null)
+    {
+        // Make a copy so we don't modify the original list
+        List<T> workingList = new List<T>(source);
+
+        // If exclude is provided, remove those items from the working list
+        if (exclude != null && exclude.Count > 0)
+        {
+            workingList.RemoveAll(item => exclude.Contains(item));
+        }
+
+        // Safety check: clamp quantity to the working list count
+        if (quantity > workingList.Count)
+        {
+            quantity = workingList.Count;
+        }
+
+        // Partial Fisher–Yates shuffle (only up to 'quantity')
+        for (int i = 0; i < quantity; i++)
+        {
+            int r = Random.Range(i, workingList.Count);
+            // Swap
+            T temp = workingList[i];
+            workingList[i] = workingList[r];
+            workingList[r] = temp;
+        }
+
+        // Return the first 'quantity' elements of the shuffled list
+        return workingList.GetRange(0, quantity);
+    }
 }

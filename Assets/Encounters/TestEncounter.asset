@@ -15,16 +15,13 @@ MonoBehaviour:
   enemyInfos:
   - enemy: {fileID: 11400000, guid: 7a2320beb70f5a84aa810582ff8195ca, type: 2}
     position: {x: 2, y: 3}
-    startingHP: 3
+    startingHP: 5
   - enemy: {fileID: 11400000, guid: 7a2320beb70f5a84aa810582ff8195ca, type: 2}
     position: {x: -2, y: -2}
-    startingHP: 3
+    startingHP: 5
   - enemy: {fileID: 11400000, guid: 7a2320beb70f5a84aa810582ff8195ca, type: 2}
     position: {x: -2, y: 2}
-    startingHP: 3
+    startingHP: 5
   - enemy: {fileID: 11400000, guid: 7a2320beb70f5a84aa810582ff8195ca, type: 2}
     position: {x: 2, y: -3}
-    startingHP: 3
-  - enemy: {fileID: 11400000, guid: 7a2320beb70f5a84aa810582ff8195ca, type: 2}
-    position: {x: -3, y: 0}
-    startingHP: 3
+    startingHP: 5

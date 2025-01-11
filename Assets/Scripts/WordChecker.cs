@@ -73,7 +73,7 @@ public class WordChecker : MonoBehaviour
 
         bool isValid = wordSet.Contains(word);
 
-        Debug.Log($"Is {word} valid? {isValid}");
+        //Debug.Log($"Is {word} valid? {isValid}");
 
         return wordSet.Contains(word);
     }

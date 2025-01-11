@@ -15,4 +15,16 @@ public class UIManager : MonoBehaviour
 
         return df;
     }
+
+    public Floater SpawnGenericFloater(Vector2 pos, string text)
+    {
+        GameObject go = damageFloaterPooledObject.Spawn(pos, Quaternion.identity);
+        Floater df = go.GetComponent<Floater>();
+        if (df != null)
+        {
+            df.SetText(text);
+        }
+
+        return df;
+    }
 }

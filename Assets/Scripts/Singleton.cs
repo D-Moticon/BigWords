@@ -11,6 +11,7 @@ public class Singleton : MonoBehaviour
     public CardCreator cardCreator;
     public PrefabReferences prefabReferences;
     public UIManager uiManager;
+    public LetterPicker letterPicker;
 
     private void Awake()
     {

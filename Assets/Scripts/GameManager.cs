@@ -42,10 +42,12 @@ public class GameManager : MonoBehaviour
     
     public Actor actorPrefab;
     public Relic relicPrefab;
+    public PriceTag priceTagPrefab;
 
     public DeckSO playerStartingDeck;
     public Transform playerDeckLocation;
 
+    public float playerStartingCoins = 0f;
     public List<RelicSO> playerStartingRelics;
     public Transform relicLocation;
     public float relicSpacing = 1f;
@@ -53,7 +55,7 @@ public class GameManager : MonoBehaviour
 
     public Transform playerCenterLocation;
     public Transform enemyCenterLocation;
-    Deck playerDeck;
+    
 
     [FoldoutGroup("Rules")]
     public float smartShuffleFactor = 0f;
@@ -80,11 +82,17 @@ public class GameManager : MonoBehaviour
     [FoldoutGroup("UpdatedAtRuntime")]
     public Actor player;
     [FoldoutGroup("UpdatedAtRuntime")]
+    public Deck playerDeck;
+    [FoldoutGroup("UpdatedAtRuntime")]
     public Actor currentlyTargetedActor;
+    [FoldoutGroup("UpdatedAtRuntime")]
+    public Vector2 targetedActorPosition;
     [FoldoutGroup("UpdatedAtRuntime")]
     public List<Actor> enemies;
     [FoldoutGroup("UpdatedAtRuntime")]
     public int discardsRemaining;
+    [FoldoutGroup("UpdatedAtRuntime")]
+    public List<Relic> playerRelics;
 
     //When certain events happen (like entering the draw phase, doing damage), the game manager will send out this
     //list, which relics or cards can add their tasks to and will be performed before proceeding
@@ -93,10 +101,16 @@ public class GameManager : MonoBehaviour
     public static event TaskDelegate DrawPhaseEnteredEvent;
     public delegate void CardTaskDelegate(ref List<IEnumerator> tasksToPerform, Card c);
     public static event CardTaskDelegate CardTriggeredEvent;
-    public delegate void AttackInfoDelegate(ref List<IEnumerator> tasksToPerform, AttackInfo attackInfo);
-    public static event AttackInfoDelegate AttackCompletedEvent;
+    public delegate void EffectParamsDelegate(ref List<IEnumerator> tasksToPerform, EffectParams effectParams);
+    public static event EffectParamsDelegate AttackCompletedEvent;
+    public static event EffectParamsDelegate PostAttackDiscardCompletedEvent;
+
+    public delegate void AddedFloatDelegate(float valueAdded, float totalValue);
+    public static event AddedFloatDelegate CoinsAddedEvent;
+    public static event AddedFloatDelegate CoinsSubtractedEvent;
 
     AttackInfo currentAttackInfo;
+    List<Actor> doomedActors = new List<Actor>(); //actors to destroy at end of frame
 
     public class TaskParams
     {
@@ -107,11 +121,14 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         Actor.ActorDiedEvent += ActorDiedListener;
+        Relic.relicAddedEvent += RelicAddedListener;
+        
     }
 
     private void OnDisable()
     {
         Actor.ActorDiedEvent -= ActorDiedListener;
+        Relic.relicAddedEvent -= RelicAddedListener;
     }
 
     public void Start()
@@ -129,10 +146,12 @@ public class GameManager : MonoBehaviour
         states.Add(new ProcessAttackState());
         states.Add(new EnemyAttackState());
 
+        AddCoinsToPlayer((int)playerStartingCoins);
+
         for (int i = 0; i < playerStartingRelics.Count; i++)
         {
             Relic r = Relic.CreateRelicFromSO(playerStartingRelics[i]);
-            r.transform.position = relicLocation.position + Vector3.right * i * relicSpacing;
+            r.AddRelic();
         }
 
         CreateEncounter(currentEncounter);
@@ -181,6 +200,17 @@ public class GameManager : MonoBehaviour
     private void LateUpdate()
     {
         playButtonPressed = false;
+
+        /*for (int i = 0; i < doomedActors.Count; i++)
+        {
+            if (doomedActors != null)
+            {
+                print("DOOMED ACTOR KILLED");
+                Destroy(doomedActors[i].gameObject);
+            }
+        }
+
+        doomedActors.Clear();*/
     }
 
     public void CreateEncounter(EnemyEncounterSO enemyEncounterSO)
@@ -341,70 +371,31 @@ public class GameManager : MonoBehaviour
                 yield break;
             }
 
-            gameManager.currentAttackInfo.source = player;
-            gameManager.currentAttackInfo.target = gameManager.currentlyTargetedActor;
-            gameManager.currentAttackInfo.sourcePosition = player.transform.position;
-            gameManager.currentAttackInfo.targetPosition = gameManager.currentlyTargetedActor.transform.position;
-            gameManager.currentAttackInfo.cards = rackTest.cards;
-            gameManager.currentAttackInfo.word = rackTest.word;
-            gameManager.currentAttackInfo.wordChars = rackTest.wordChars;
-            gameManager.currentAttackInfo.cardCount = rackTest.cards.Count;
-
-            //Card Count Multiplier
-            float cardCountMultiplier = 1f;
-            gameManager.cardCountMultiplierText.text = "";
-            for (int i = 0; i < gameManager.currentAttackInfo.cards.Count; i++)
+            //Early Trigger Cards
+            EffectParams effectParams = Singleton.Instance.gameManager.CreateEffectParamsFromBoardState();
+            effectParams.phase = Phase.earlyCardActivate;
+            for (int i = 0; i < effectParams.cardsOnRack.Count; i++)
             {
-                cardCountMultiplier += gameManager.multAddPerCardCount;
-                gameManager.cardCountMultiplierText.text = $"x{cardCountMultiplier}";
-                gameManager.cardCountMultiplierText.GetComponentInChildren<MMF_Player>().PlayFeedbacks();
-                gameManager.currentAttackInfo.cards[i].MultiplierCountFeel();
-
-                if (i < gameManager.cardCountMultiplierSFX.Length)
-                {
-                    gameManager.cardCountMultiplierSFX[i].Play();
-                }
-
-                else
-                {
-                    gameManager.cardCountMultiplierSFX[gameManager.cardCountMultiplierSFX.Length-1].Play();
-                }
-
-                yield return new WaitForSeconds(0.1f);
-            }
-
-            gameManager.currentAttackInfo.cardCountMultiplier = cardCountMultiplier;
-
-            yield return new WaitForSeconds(0.5f);
-
-            //Trigger Cards
-            for (int i = 0; i < gameManager.currentAttackInfo.cards.Count; i++)
-            {
-                Task cardTask = new Task(gameManager.currentAttackInfo.cards[i].TriggerCard(gameManager.currentAttackInfo));
+                Task cardTask = new Task(effectParams.cardsOnRack[i].ActivateEffects(effectParams));
                 while (cardTask.Running)
                 {
                     yield return null;
                 }
-
-                //Call for any relics/cards that need to be activated on Card Trigger
-                List<IEnumerator> cardTriggeredTasks = new List<IEnumerator>();
-                CardTriggeredEvent?.Invoke(ref cardTriggeredTasks, gameManager.currentAttackInfo.cards[i]);
-
-                for (int j = 0; j < cardTriggeredTasks.Count; j++)
-                {
-                    Task t = new Task(cardTriggeredTasks[j]);
-                    while (t.Running)
-                    {
-                        yield return null;
-                    }
-                }
-
-                yield return new WaitForSeconds(0.1f);
             }
+
+            //Trigger Cards
+            Task triggerRackTask = new Task(TriggerRack(Phase.cardActivate, true));
+            while (triggerRackTask.Running)
+            {
+                yield return null;
+            }
+
+            effectParams = Singleton.Instance.gameManager.CreateEffectParamsFromBoardState();
+            effectParams.phase = Phase.postAttack;
 
             //Attack Completed Tasks
             List<IEnumerator> attackCompletedTasks = new List<IEnumerator>();
-            AttackCompletedEvent?.Invoke(ref attackCompletedTasks, gameManager.currentAttackInfo);
+            AttackCompletedEvent?.Invoke(ref attackCompletedTasks, effectParams);
             for (int j = 0; j < attackCompletedTasks.Count; j++)
             {
                 Task t = new Task(attackCompletedTasks[j]);
@@ -416,10 +407,26 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(0.4f);
 
-            for (int i = 0; i < gameManager.currentAttackInfo.cards.Count; i++)
+            List<Card> cardsOnRack = playerRack.GetRackCards();
+            for (int i = 0; i < cardsOnRack.Count; i++)
             {
-                gameManager.currentAttackInfo.cards[i].MoveCardToDeck(discardPile);
+                cardsOnRack[i].MoveCardToDeck(discardPile);
                 yield return new WaitForSeconds(0.1f);
+            }
+
+            //Post Discard Tasks
+            effectParams = Singleton.Instance.gameManager.CreateEffectParamsFromBoardState();
+            effectParams.phase = Phase.postDiscard;
+
+            List<IEnumerator> discardCompletedTasks = new List<IEnumerator>();
+            PostAttackDiscardCompletedEvent?.Invoke(ref discardCompletedTasks, effectParams);
+            for (int j = 0; j < discardCompletedTasks.Count; j++)
+            {
+                Task t = new Task(discardCompletedTasks[j]);
+                while (t.Running)
+                {
+                    yield return null;
+                }
             }
 
             yield return new WaitForSeconds(1.0f);
@@ -429,6 +436,38 @@ public class GameManager : MonoBehaviour
 
         
     }
+
+    public EffectParams CreateEffectParamsFromBoardState()
+    {
+        Rack.TestResults rackTest = playerRack.TestRack();
+
+        EffectParams effectParams = new EffectParams();
+        effectParams.source = player;
+        effectParams.sourcePos = player.transform.position;
+        effectParams.target = currentlyTargetedActor;
+        if (currentlyTargetedActor != null)
+        {
+            effectParams.targetPos = currentlyTargetedActor.transform.position;
+        }
+
+        else
+        {
+            effectParams.targetPos = targetedActorPosition;
+        }
+
+        if (enemies != null)
+        {
+            effectParams.allActorsOnTargetTeam = enemies;
+        }
+
+        effectParams.cardsOnRack = rackTest.cards;
+        effectParams.attackingWord = rackTest.word;
+        effectParams.attackingWordChars = rackTest.wordChars;
+        effectParams.attackingWordLetterCount = rackTest.cards.Count;
+
+        return effectParams;
+    }
+
 
     public class EnemyAttackState : State
     {
@@ -500,11 +539,62 @@ public class GameManager : MonoBehaviour
         playerCoinsText.text = Mathf.FloorToInt(playerCoins).ToString();
     }
 
-    public static IEnumerator TriggerRackBackwards(Relic relicInstance, AttackInfo attackInfo)
+    public static IEnumerator TriggerRack(Phase phase, bool runForward = true)
     {
-        for (int i = attackInfo.cards.Count-1; i >=0; i--)
+        GameManager gameManager = Singleton.Instance.gameManager;
+        EffectParams effectParams = Singleton.Instance.gameManager.CreateEffectParamsFromBoardState();
+        effectParams.phase = phase;
+
+        //Card Count Multiplier
+        float cardCountMultiplier = 1f;
+        gameManager.cardCountMultiplierText.text = "";
+
+        for (int i = 0; i < effectParams.cardsOnRack.Count; i++)
         {
-            Task cardTask = new Task(attackInfo.cards[i].TriggerCard(attackInfo));
+            cardCountMultiplier += gameManager.multAddPerCardCount;
+            gameManager.cardCountMultiplierText.text = $"x{cardCountMultiplier}";
+            gameManager.cardCountMultiplierText.GetComponentInChildren<MMF_Player>().PlayFeedbacks();
+            effectParams.cardsOnRack[i].MultiplierCountFeel();
+
+            if (i < gameManager.cardCountMultiplierSFX.Length)
+            {
+                gameManager.cardCountMultiplierSFX[i].Play();
+            }
+
+            else
+            {
+                gameManager.cardCountMultiplierSFX[gameManager.cardCountMultiplierSFX.Length - 1].Play();
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        //Trigger Cards
+        effectParams.cardCountMult = cardCountMultiplier;
+        
+
+        yield return new WaitForSeconds(0.5f);
+
+        int start, end, step;
+        int length = effectParams.cardsOnRack.Count;
+
+        if (runForward)
+        {
+            start = 0;
+            end = length;
+            step = 1;
+        }
+        else
+        {
+            start = length - 1;
+            end = -1;       // one less than the lowest index
+            step = -1;
+        }
+
+
+        for (int i = start; i != end; i+=step)
+        {
+            Task cardTask = new Task(effectParams.cardsOnRack[i].ActivateEffects(effectParams));
             while (cardTask.Running)
             {
                 yield return null;
@@ -512,7 +602,7 @@ public class GameManager : MonoBehaviour
 
             //Call for any relics/cards that need to be activated on Card Trigger
             List<IEnumerator> cardTriggeredTasks = new List<IEnumerator>();
-            CardTriggeredEvent?.Invoke(ref cardTriggeredTasks, attackInfo.cards[i]);
+            CardTriggeredEvent?.Invoke(ref cardTriggeredTasks, effectParams.cardsOnRack[i]);
 
             for (int j = 0; j < cardTriggeredTasks.Count; j++)
             {
@@ -540,6 +630,7 @@ public class GameManager : MonoBehaviour
         }
 
         Destroy(actor.gameObject);
+        //doomedActors.Add(actor);
     }
 
     public void TargetFirstValidEnemy()
@@ -565,9 +656,40 @@ public class GameManager : MonoBehaviour
         currentlyTargetedActor = null;
     }
 
-    public void AddCoinsToPlayer(int coinAmount)
+    public void AddCoinsToPlayer(float coinAmount)
     {
         playerCoins += coinAmount;
-        UpdateUI();
+        CoinsAddedEvent?.Invoke(coinAmount, playerCoins);
+    }
+
+    public void SubtractCoinsFromPlayer(float coinAmount)
+    {
+        playerCoins -= coinAmount;
+        CoinsSubtractedEvent?.Invoke(coinAmount, playerCoins);
+    }
+
+    public void RelicAddedListener(Relic r)
+    {
+        r.transform.SetParent(relicLocation);
+
+        if (playerRelics == null)
+        {
+            playerRelics = new List<Relic>();
+        }
+        playerRelics.Add(r);
+    }
+
+    public List<Actor> GetLivingEnemies()
+    {
+        List<Actor> es = new List<Actor>();
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            if (enemies[i] != null && !enemies[i].isDying)
+            {
+                es.Add(enemies[i]);
+            }
+        }
+
+        return es;
     }
 }

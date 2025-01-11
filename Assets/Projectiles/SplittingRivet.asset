@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a7db477d8c5314478b16aaf38305efb, type: 3}
+  m_Name: SplittingRivet
+  m_EditorClassIdentifier: 
+  projectileName: Pop Rivet
+  projectileDescription: Splits into smaller rivets on impact
+  projectilePrefab: {fileID: 6465158621303419580, guid: d1cd9307ea5861b4bbce90ec48873e81, type: 3}
+  projectileSpeed: 100
+  muzzleVFX: {fileID: 0}
+  shotSFX:
+    sfx:
+      Guid:
+        Data1: -9184284
+        Data2: 1211867414
+        Data3: -1674209643
+        Data4: 502815184
+      Path: event:/SFX/RivetGunShot
+    vol: 0.5
+  impactVFX: {fileID: 11400000, guid: e712d4ba7146a064d9bd8afcb3df13a9, type: 2}
+  impactSFX:
+    sfx:
+      Guid:
+        Data1: -831959806
+        Data2: 1232527246
+        Data3: 841038014
+        Data4: 455874919
+      Path: event:/SFX/HeavyStrike
+    vol: 0.5
+  projectileEffects:
+  - rid: 6827158185834447404
+  - rid: 6827158185834447402
+  references:
+    version: 2
+    RefIds:
+    - rid: 6827158185834447402
+      type: {class: ProjectileSplitEffect, ns: , asm: Assembly-CSharp}
+      data:
+        activationPhase: 0
+        projectileSO: {fileID: 11400000, guid: 3081d9e136546f14f9652c031ddb489d, type: 2}
+        baseDamage: 0.25
+        multiplyByCardPower: 1
+        multiplyByCardCountMult: 1
+        onlySplitIfTargetKilled: 0
+    - rid: 6827158185834447404
+      type: {class: DamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        activationPhase: 0
+        baseDamage: 1
+        multiplyByCardCountMult: 0
+        multiplyByCardPower: 0

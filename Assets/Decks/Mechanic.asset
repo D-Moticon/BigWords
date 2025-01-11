@@ -13,81 +13,143 @@ MonoBehaviour:
   m_Name: Mechanic
   m_EditorClassIdentifier: 
   cardInfos:
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
     letter: 65
-    quantity: 5
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 69
-    quantity: 6
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 73
-    quantity: 4
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 79
-    quantity: 4
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 85
-    quantity: 4
-  - card: {fileID: 11400000, guid: 4becf15707000c243b919ed036a31de6, type: 2}
-    letter: 66
+    overridePower: 0
+    power: 1
     quantity: 2
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 67
-    quantity: 2
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 68
-    quantity: 2
-  - card: {fileID: 11400000, guid: 4becf15707000c243b919ed036a31de6, type: 2}
-    letter: 70
-    quantity: 2
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 71
-    quantity: 2
-  - card: {fileID: 11400000, guid: 4becf15707000c243b919ed036a31de6, type: 2}
-    letter: 72
-    quantity: 2
-  - card: {fileID: 11400000, guid: 4becf15707000c243b919ed036a31de6, type: 2}
-    letter: 74
-    quantity: 2
-  - card: {fileID: 11400000, guid: 4becf15707000c243b919ed036a31de6, type: 2}
-    letter: 75
-    quantity: 2
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 76
-    quantity: 2
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 77
-    quantity: 2
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 78
-    quantity: 2
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 80
-    quantity: 2
-  - card: {fileID: 11400000, guid: 338d4d1ceae5b1044a28ff6b542b9fa4, type: 2}
-    letter: 81
-    quantity: 1
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 82
-    quantity: 2
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 83
+  - card: {fileID: 11400000, guid: 44b56d3b5bea9494f9fd7217eca7b6f9, type: 2}
+    letter: 65
+    overridePower: 0
+    power: 1
     quantity: 3
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 84
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 69
+    overridePower: 0
+    power: 1
+    quantity: 4
+  - card: {fileID: 11400000, guid: 44b56d3b5bea9494f9fd7217eca7b6f9, type: 2}
+    letter: 69
+    overridePower: 0
+    power: 1
     quantity: 2
-  - card: {fileID: 11400000, guid: 4becf15707000c243b919ed036a31de6, type: 2}
-    letter: 86
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 73
+    overridePower: 0
+    power: 1
+    quantity: 4
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 79
+    overridePower: 0
+    power: 1
+    quantity: 4
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 85
+    overridePower: 0
+    power: 1
+    quantity: 4
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 66
+    overridePower: 1
+    power: 2
     quantity: 2
-  - card: {fileID: 11400000, guid: 4becf15707000c243b919ed036a31de6, type: 2}
-    letter: 87
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 67
+    overridePower: 0
+    power: 1
     quantity: 2
-  - card: {fileID: 11400000, guid: 338d4d1ceae5b1044a28ff6b542b9fa4, type: 2}
-    letter: 88
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 68
+    overridePower: 0
+    power: 1
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 70
+    overridePower: 0
+    power: 1
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 71
+    overridePower: 0
+    power: 1
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 72
+    overridePower: 0
+    power: 1
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 74
+    overridePower: 1
+    power: 3
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 75
+    overridePower: 1
+    power: 2
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 76
+    overridePower: 0
+    power: 1
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 77
+    overridePower: 0
+    power: 1
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 78
+    overridePower: 0
+    power: 1
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 80
+    overridePower: 1
+    power: 2
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 81
+    overridePower: 1
+    power: 3
     quantity: 1
-  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
-    letter: 89
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 82
+    overridePower: 0
+    power: 1
     quantity: 2
-  - card: {fileID: 11400000, guid: 338d4d1ceae5b1044a28ff6b542b9fa4, type: 2}
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 83
+    overridePower: 0
+    power: 1
+    quantity: 3
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 84
+    overridePower: 0
+    power: 1
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 86
+    overridePower: 1
+    power: 3
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 87
+    overridePower: 1
+    power: 2
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 88
+    overridePower: 1
+    power: 3
+    quantity: 1
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+    letter: 89
+    overridePower: 1
+    power: 2
+    quantity: 2
+  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
     letter: 90
+    overridePower: 1
+    power: 3
     quantity: 1

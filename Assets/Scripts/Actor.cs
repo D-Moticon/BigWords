@@ -62,7 +62,7 @@ public class Actor : MonoBehaviour
         }
     }
 
-    public IEnumerator Damage(float damage)
+    public IEnumerator Damage(float damage, EffectParams effectParams = null)
     {
         health -= damage;
         UpdateHealthIndicators();
@@ -72,6 +72,11 @@ public class Actor : MonoBehaviour
 
         if (health <= 0f)
         {
+            if (effectParams.target == this)
+            {
+                effectParams.targetKilled = true;
+            }
+
             Task dieTask = new Task(Die());
             while (dieTask.Running)
             {
@@ -125,8 +130,6 @@ public class Actor : MonoBehaviour
         health = h;
         maxHealth = h;
         UpdateHealthIndicators();
-
-        print(h);
     }
 
 

@@ -6,10 +6,7 @@ using UnityEngine;
 public class ExtraHitRelic : RelicSO
 {
     public float damage = 1f;
-    public Projectile projectilePrefab;
-    public SFXInfo projectileImpactSFX;
-    public PooledObjectData projectileImpactVFX;
-    public float projectileSpeed = 100f;
+    public ProjectileSO projectileSO;
 
     public override void CardTriggered(Relic relicInstance, ref List<IEnumerator> tasksToPerform, Card c)
     {
@@ -21,9 +18,7 @@ public class ExtraHitRelic : RelicSO
             return;
         }
 
-        //tasksToPerform.Add(DamageTarget(relicInstance));
-        tasksToPerform.Add(Projectile.ProjectileFlightAndDamage(projectilePrefab, projectileSpeed, damage,
-            relicInstance.transform.position, target.transform.position, target, projectileImpactVFX, projectileImpactSFX));
+        //tasksToPerform.Add(Projectile.FireProjectile(projectileSO, c.transform.position, target.transform.position, null, target, damage, 1));
         PlayFeelAndSFX();
     }
 
