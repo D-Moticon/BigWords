@@ -9,6 +9,7 @@ public class ShootProjectileEffect : Effect
     public float baseDamage = 1f;
     public bool multiplyByCardCountMult = true;
     public bool multiplyByCardPower = true;
+    public FXSO shooterFX;
 
     public override string GetEffectDescription()
     {
@@ -17,6 +18,15 @@ public class ShootProjectileEffect : Effect
 
     protected override IEnumerator RunEffect(EffectParams effectParams)
     {
+        if (shooterFX != null && effectParams.sourceCard != null)
+        {
+            Task shooterFXtask = new Task(shooterFX.PlayFXSteps(effectParams.sourceCard.gameObject));
+            while (shooterFXtask.Running)
+            {
+                yield return null;
+            }
+        }
+
         Task t = new Task(Projectile.FireProjectile(projectileSO, effectParams, baseDamage, multiplyByCardCountMult, multiplyByCardPower));
         while (t.Running)
         {

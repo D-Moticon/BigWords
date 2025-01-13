@@ -26,7 +26,7 @@ MonoBehaviour:
         Data4: 502815184
       Path: event:/SFX/RivetGunShot
     vol: 0.5
-  impactVFX: {fileID: 11400000, guid: e712d4ba7146a064d9bd8afcb3df13a9, type: 2}
+  impactVFX: {fileID: 11400000, guid: b4fde9e5c29488c42976fb826464e1e6, type: 2}
   impactSFX:
     sfx:
       Guid:

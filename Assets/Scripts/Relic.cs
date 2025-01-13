@@ -72,9 +72,9 @@ public class Relic : MonoBehaviour, IBuyable
         relicSO.PostAttackDiscardCompleted(this, ref tasksToPerform, effectParams);
     }
 
-    public virtual void ActorDiedListener(Actor dyingActor, ref List<IEnumerator> tasksToPerform)
+    public virtual void ActorDiedListener(Actor dyingActor, ref List<IEnumerator> tasksToPerform, EffectParams effectParams)
     {
-        relicSO.ActorDied(this, dyingActor, ref tasksToPerform);
+        relicSO.ActorDied(this, dyingActor, ref tasksToPerform, effectParams);
     }
 
     public virtual void GetBuyablePriceListener(IBuyable buyable, ref float price, float bPrice)

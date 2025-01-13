@@ -12,6 +12,7 @@ public class Singleton : MonoBehaviour
     public PrefabReferences prefabReferences;
     public UIManager uiManager;
     public LetterPicker letterPicker;
+    public FeelPoolManager feelPoolManager;
 
     private void Awake()
     {

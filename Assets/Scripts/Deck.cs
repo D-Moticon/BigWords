@@ -28,6 +28,8 @@ public class Deck : MonoBehaviour
         {
             currentCards.Add(card);
         }
+
+        card.MoveCardToDeck(this, 1f, true);
     }
 
     public void AddCardTemporarily(Card card)
@@ -201,5 +203,17 @@ public class Deck : MonoBehaviour
     {
         c = char.ToUpperInvariant(c);
         return (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U');
+    }
+
+    public void MoveCardsToOtherDeck(Deck d)
+    {
+        List<Card> cs = currentCards;
+
+        for (int i = currentCards.Count - 1; i >= 0; i--)
+        {
+            currentCards[i].MoveCardToDeck(d);
+            MoveCardOffDeck(currentCards[i]);
+        }
+
     }
 }

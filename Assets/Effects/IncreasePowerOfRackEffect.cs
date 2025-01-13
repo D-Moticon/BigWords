@@ -5,11 +5,21 @@ using System.Collections.Generic;
 public class IncreasePowerOfRackEffect : Effect
 {
     public float powerIncrease = 1f;
-    public SFXInfo powerIncreasePerCardSFX;
+    public FXSO activationFX;
+    public FXSO fxPerCard;
 
     protected override IEnumerator RunEffect(EffectParams effectParams)
     {
         List<Card> cardsOnRack = effectParams.cardsOnRack;
+
+        if (activationFX != null)
+        {
+            Task activationFXTask = new Task(activationFX.PlayFXSteps(effectParams.sourceCard.gameObject));
+            while (activationFXTask.Running)
+            {
+                yield return null;
+            }
+        }
 
         for (int i = 0; i < cardsOnRack.Count; i++)
         {
@@ -18,9 +28,13 @@ public class IncreasePowerOfRackEffect : Effect
                 continue;
             }
 
+            Task perCardFXTask = new Task(fxPerCard.PlayFXSteps(effectParams.sourceCard.gameObject, cardsOnRack[i].gameObject));
+            while (perCardFXTask.Running)
+            {
+                yield return null;
+            }
+
             Task t = new Task(cardsOnRack[i].AddPower(powerIncrease));
-            effectParams.sourceCard.StandardBumpFeel();
-            powerIncreasePerCardSFX.Play();
 
             while (t.Running)
             {

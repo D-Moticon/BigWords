@@ -27,7 +27,7 @@ public class Actor : MonoBehaviour
     [FoldoutGroup("Death")]
     public MMF_Player deathFeel;
 
-    public delegate void ActorDeathDelegate(Actor dyingActor, ref List<IEnumerator> tasksToPerform);
+    public delegate void ActorDeathDelegate(Actor dyingActor, ref List<IEnumerator> tasksToPerform, EffectParams effectParams);
     public static ActorDeathDelegate ActorDiedEvent;
 
     public bool isDying = false;
@@ -87,7 +87,7 @@ public class Actor : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator Die()
+    public IEnumerator Die(EffectParams effectParams = null)
     {
         if (deathVFXPrefab != null)
         {
@@ -113,7 +113,7 @@ public class Actor : MonoBehaviour
         isDying = true;
 
         List<IEnumerator> tasksToPerform = new List<IEnumerator>();
-        ActorDiedEvent?.Invoke(this, ref tasksToPerform);
+        ActorDiedEvent?.Invoke(this, ref tasksToPerform, effectParams);
 
         for (int j = 0; j < tasksToPerform.Count; j++)
         {

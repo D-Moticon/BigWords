@@ -20,6 +20,7 @@ MonoBehaviour:
   power: 1
   cardEffects:
   - rid: 6827158185834447352
+  descriptionOverride: 
   references:
     version: 2
     RefIds:
@@ -31,3 +32,4 @@ MonoBehaviour:
         baseDamage: 1
         multiplyByCardCountMult: 1
         multiplyByCardPower: 1
+        shooterFX: {fileID: 11400000, guid: 528ee9e675e9f1c4ea035b16307562f7, type: 2}

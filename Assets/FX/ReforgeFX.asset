@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e581e10435652914ba4ac9f56ed6f717, type: 3}
+  m_Name: ReforgeFX
+  m_EditorClassIdentifier: 
+  fxSteps:
+  - rid: 6827158274866151512
+  - rid: 6827158185834447520
+  - rid: 6827158274866151531
+  - rid: 6827158185834447524
+  references:
+    version: 2
+    RefIds:
+    - rid: 6827158185834447520
+      type: {class: SFXStep, ns: , asm: Assembly-CSharp}
+      data:
+        waitForStepToFinish: 0
+        postDelay: 0
+        sfxInfo:
+          sfx:
+            Guid:
+              Data1: 1897770233
+              Data2: 1205531993
+              Data3: -1826268003
+              Data4: -29696498
+            Path: event:/SFX/HammerHit
+          vol: 0.5
+    - rid: 6827158185834447524
+      type: {class: FeelFXStep, ns: , asm: Assembly-CSharp}
+      data:
+        waitForStepToFinish: 0
+        postDelay: 0.1
+        feelSO: {fileID: 11400000, guid: 2075f5225178c6b44bc52b54db55032e, type: 2}
+        fxTarget: 1
+    - rid: 6827158274866151512
+      type: {class: AnimationFXStep, ns: , asm: Assembly-CSharp}
+      data:
+        waitForStepToFinish: 0
+        postDelay: 0.1
+        animatorPrefab: {fileID: 5359582125033223205, guid: 9c55a8b1235b6f04f84e39441944df3c, type: 3}
+        stateName: HammerStrike
+        replaceSprite: {fileID: 21300000, guid: a8c26bfe0dd9e58488e64df89ec12f74, type: 3}
+        fxTarget: 1
+    - rid: 6827158274866151531
+      type: {class: SpawnPooledObjectFXStep, ns: , asm: Assembly-CSharp}
+      data:
+        waitForStepToFinish: 1
+        postDelay: 0
+        pooledObjectData: {fileID: 11400000, guid: b4fde9e5c29488c42976fb826464e1e6, type: 2}
+        scale: {x: 3, y: 3}
+        fxTarget: 1

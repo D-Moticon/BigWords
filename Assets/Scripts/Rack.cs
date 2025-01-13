@@ -262,4 +262,14 @@ public class Rack : MonoBehaviour
             cards[i].MoveCardToSlot(s, 0.2f, false);
         }
     }
+
+    public void MoveRackCardsToDeck(Deck d)
+    {
+        List<Card> cs = GetRackCards();
+        for(int i=cs.Count-1; i>=0; i--)
+        {
+            cs[i].RemoveFromSlot();
+            cs[i].MoveCardToDeck(d);
+        }
+    }
 }

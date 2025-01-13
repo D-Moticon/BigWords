@@ -6,6 +6,7 @@ using System.Collections;
 public abstract class Effect
 {
     public Phase activationPhase;
+
     public virtual IEnumerator GetEffectTask(EffectParams effectParams)
     {
         // Check if the current phase matches the effect's activation phase

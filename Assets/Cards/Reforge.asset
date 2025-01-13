@@ -20,6 +20,7 @@ MonoBehaviour:
   power: 1
   cardEffects:
   - rid: 6827158185834447389
+  descriptionOverride: 
   references:
     version: 2
     RefIds:
@@ -28,12 +29,5 @@ MonoBehaviour:
       data:
         activationPhase: 2
         powerIncrease: 1
-        powerIncreasePerCardSFX:
-          sfx:
-            Guid:
-              Data1: 1897770233
-              Data2: 1205531993
-              Data3: -1826268003
-              Data4: -29696498
-            Path: event:/SFX/HammerHit
-          vol: 0.5
+        activationFX: {fileID: 11400000, guid: 0adeb3b86e627d449badf2df39c616c2, type: 2}
+        fxPerCard: {fileID: 11400000, guid: f2079e6816d10e54993222b7c868a0e5, type: 2}

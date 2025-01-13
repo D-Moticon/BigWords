@@ -2,12 +2,21 @@ using UnityEngine;
 
 public class SelectionHandler : MonoBehaviour
 {
+    public enum Mode
+    {
+        play,
+        shop
+    }
+
+    [HideInInspector]
+    public Mode mode;
+
     public Card currentlyHeldCard;
     public Card currentlyHoveredCard;
     public Relic currentlyHoveredRelic;
-    Slot currentlyHoveredSlot;
-    Actor currentlyHoveredActor;
-    Actor currentlyTargetedActor;
+    public Slot currentlyHoveredSlot;
+    public Actor currentlyHoveredActor;
+    public Actor currentlyTargetedActor;
 
     private void OnEnable()
     {
@@ -17,6 +26,7 @@ public class SelectionHandler : MonoBehaviour
         Relic.relicHoveredEvent += RelicHoveredListener;
         Relic.relicDeHoveredEvent += RelicDeHoveredListener;
         Relic.relicClickedEvent += RelicClickedListener;
+        ShopState.ShopStateEnteredEvent += ShopStateEnteredListener;
     }
 
     private void OnDisable()
@@ -27,6 +37,7 @@ public class SelectionHandler : MonoBehaviour
         Relic.relicHoveredEvent -= RelicHoveredListener;
         Relic.relicDeHoveredEvent -= RelicDeHoveredListener;
         Relic.relicClickedEvent -= RelicClickedListener;
+        ShopState.ShopStateEnteredEvent -= ShopStateEnteredListener;
     }
 
     // Update is called once per frame
@@ -50,7 +61,7 @@ public class SelectionHandler : MonoBehaviour
         {
             if (currentlyHoveredActor != null)
             {
-                TargetActor(currentlyHoveredActor);
+                Singleton.Instance.gameManager.TargetActor(currentlyHoveredActor);
             }
         }
 
@@ -101,8 +112,12 @@ public class SelectionHandler : MonoBehaviour
 
     public void CardClickedListener(Card card)
     {
-        currentlyHeldCard = card;
-        currentlyHeldCard.RemoveFromSlot();
+        if (mode == Mode.play)
+        {
+            currentlyHeldCard = card;
+            currentlyHeldCard.RemoveFromSlot();
+        }
+
     }
 
     public void RelicHoveredListener(Relic relic)
@@ -136,21 +151,9 @@ public class SelectionHandler : MonoBehaviour
         }
     }
 
-    public void TargetActor(Actor actor)
+    void ShopStateEnteredListener()
     {
-        if (actor != currentlyTargetedActor)
-        {
-            if (currentlyTargetedActor != null)
-            {
-                currentlyTargetedActor.DeSelectActor();
-            }
-
-            currentlyTargetedActor = actor;
-        }
-
-        actor.SelectActor();
-        Singleton.Instance.gameManager.currentlyTargetedActor = actor;
-        Singleton.Instance.gameManager.targetedActorPosition = actor.transform.position;
+        mode = Mode.shop;
     }
 
 }

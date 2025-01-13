@@ -16,6 +16,8 @@ public class PlayerCoinsUI : MonoBehaviour
     {
         GameManager.CoinsAddedEvent += CoinsAddedListener;
         GameManager.CoinsSubtractedEvent += CoinsSubtractedListener;
+
+        targetCoins = Singleton.Instance.gameManager.playerCoins; //for when a new scene loads in, etc
     }
 
     private void OnDisable()

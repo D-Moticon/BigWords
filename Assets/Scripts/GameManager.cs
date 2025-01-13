@@ -4,44 +4,24 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 using MoreMountains.Feedbacks;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public abstract class State
-    {
-        public abstract void Enter();
-        public abstract void Update();
-        public abstract void Exit();
-
-        public bool isComplete = false;
-
-        public GameManager gameManager;
-        public Deck playerDeck;
-        public Rack playerRack;
-        public Deck discardPile;
-        public Actor player;
-
-        public State()
-        {
-            gameManager = Singleton.Instance.gameManager;
-            playerDeck = gameManager.playerDeck;
-            playerRack = gameManager.playerRack;
-            discardPile = gameManager.discardPile;
-            player = gameManager.player;
-        }
-    }
-
-    private List<State> states = new List<State>();
-    private int currentStateIndex = 0;
     public State currentState;
-    public EnemyEncounterSO currentEncounter;
+    public List<EnemyEncounterSO> encounters;
+    public int currentEncounterIndex = 0;
+    public EffectParams currentEffectParams;
     public Rack playerHand;
     public Rack playerRack;
     public Deck discardPile;
     public HeroSO startingPlayer;
-    
+
+    [FoldoutGroup("Prefabs")]
     public Actor actorPrefab;
+    [FoldoutGroup("Prefabs")]
     public Relic relicPrefab;
+    [FoldoutGroup("Prefabs")]
     public PriceTag priceTagPrefab;
 
     public DeckSO playerStartingDeck;
@@ -105,11 +85,12 @@ public class GameManager : MonoBehaviour
     public static event EffectParamsDelegate AttackCompletedEvent;
     public static event EffectParamsDelegate PostAttackDiscardCompletedEvent;
 
+    public static event System.Action CloseShopButtonPressedEvent;
+
     public delegate void AddedFloatDelegate(float valueAdded, float totalValue);
     public static event AddedFloatDelegate CoinsAddedEvent;
     public static event AddedFloatDelegate CoinsSubtractedEvent;
 
-    AttackInfo currentAttackInfo;
     List<Actor> doomedActors = new List<Actor>(); //actors to destroy at end of frame
 
     public class TaskParams
@@ -141,11 +122,6 @@ public class GameManager : MonoBehaviour
         playerDeck.transform.position = playerDeckLocation.position;
         playerDeck.SmartShuffle(smartShuffleFactor);
 
-        states.Add(new DrawState());
-        states.Add(new PlayState());
-        states.Add(new ProcessAttackState());
-        states.Add(new EnemyAttackState());
-
         AddCoinsToPlayer((int)playerStartingCoins);
 
         for (int i = 0; i < playerStartingRelics.Count; i++)
@@ -154,41 +130,15 @@ public class GameManager : MonoBehaviour
             r.AddRelic();
         }
 
-        CreateEncounter(currentEncounter);
-
-        if (states.Count > 0)
-        {
-            currentStateIndex = 0;
-            currentState = states[currentStateIndex];
-            currentState.Enter();
-        }
+        ChangeState(new StartEncounterState());
     }
 
     private void Update()
     {
         if (currentState != null)
         {
-            // 1) Run the current state’s Update
+            //Run the current state’s Update
             currentState.Update();
-
-            // 2) Check if it’s done
-            if (currentState.isComplete)
-            {
-                currentState.isComplete = false;
-                // Exit the old state
-                currentState.Exit();
-
-                // Move to the next state
-                currentStateIndex++;
-
-                if (currentStateIndex > states.Count - 1)
-                {
-                    currentStateIndex = 0;
-                }
-
-                currentState = states[currentStateIndex];
-                currentState.Enter();
-            }
         }
     }
 
@@ -256,7 +206,7 @@ public class GameManager : MonoBehaviour
 
         public override void Exit()
         {
-            print("Exiting Draw Phase");
+            
         }
 
         public override void Update()
@@ -276,7 +226,7 @@ public class GameManager : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
             }
 
-            isComplete = true;
+            gameManager.ChangeState(new PlayState());
         }
     }
 
@@ -316,12 +266,12 @@ public class GameManager : MonoBehaviour
             {
                 if (gameManager.enemies == null || gameManager.enemies.Count == 0)
                 {
-                    Singleton.Instance.selectionHandler.TargetActor(player);
+                    gameManager.TargetActor(player);
                 }
 
                 else
                 {
-                    Singleton.Instance.selectionHandler.TargetActor(gameManager.enemies[0]);
+                    gameManager.TargetActor(gameManager.enemies[0]);
                 }
                 
                 return;
@@ -337,10 +287,12 @@ public class GameManager : MonoBehaviour
                     return;
                 }
 
-                isComplete = true;
+                gameManager.ChangeState(new ProcessAttackState());
                 
             }
         }
+
+        
     }
 
     public class ProcessAttackState : State
@@ -362,8 +314,6 @@ public class GameManager : MonoBehaviour
 
         IEnumerator AttackProcessCoroutine()
         {
-            gameManager.currentAttackInfo = new AttackInfo();
-
             Rack.TestResults rackTest = playerRack.TestRack();
             if (!rackTest.isValidWord)
             {
@@ -373,6 +323,7 @@ public class GameManager : MonoBehaviour
 
             //Early Trigger Cards
             EffectParams effectParams = Singleton.Instance.gameManager.CreateEffectParamsFromBoardState();
+            gameManager.currentEffectParams = effectParams;
             effectParams.phase = Phase.earlyCardActivate;
             for (int i = 0; i < effectParams.cardsOnRack.Count; i++)
             {
@@ -391,6 +342,7 @@ public class GameManager : MonoBehaviour
             }
 
             effectParams = Singleton.Instance.gameManager.CreateEffectParamsFromBoardState();
+            gameManager.currentEffectParams = effectParams;
             effectParams.phase = Phase.postAttack;
 
             //Attack Completed Tasks
@@ -416,6 +368,7 @@ public class GameManager : MonoBehaviour
 
             //Post Discard Tasks
             effectParams = Singleton.Instance.gameManager.CreateEffectParamsFromBoardState();
+            gameManager.currentEffectParams = effectParams;
             effectParams.phase = Phase.postDiscard;
 
             List<IEnumerator> discardCompletedTasks = new List<IEnumerator>();
@@ -431,7 +384,16 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(1.0f);
 
-            isComplete = true;
+            if (gameManager.GetLivingEnemies().Count == 0)
+            {
+                gameManager.ChangeState(new ShopState());
+            }
+
+            else
+            {
+                gameManager.ChangeState(new EnemyAttackState());
+            }
+            
         }
 
         
@@ -509,7 +471,7 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            isComplete = true;
+            gameManager.ChangeState(new DrawState());
         }
     }
 
@@ -543,13 +505,30 @@ public class GameManager : MonoBehaviour
     {
         GameManager gameManager = Singleton.Instance.gameManager;
         EffectParams effectParams = Singleton.Instance.gameManager.CreateEffectParamsFromBoardState();
+        gameManager.currentEffectParams = effectParams;
         effectParams.phase = phase;
 
         //Card Count Multiplier
         float cardCountMultiplier = 1f;
         gameManager.cardCountMultiplierText.text = "";
 
-        for (int i = 0; i < effectParams.cardsOnRack.Count; i++)
+        int length = effectParams.cardsOnRack.Count;
+
+        int start, end, step;
+        if (runForward)
+        {
+            start = 0;
+            end = length;
+            step = 1;
+        }
+        else
+        {
+            start = length - 1;
+            end = -1;       // one less than the lowest index
+            step = -1;
+        }
+
+        for (int i = start; i != end; i+=step)
         {
             cardCountMultiplier += gameManager.multAddPerCardCount;
             gameManager.cardCountMultiplierText.text = $"x{cardCountMultiplier}";
@@ -575,21 +554,8 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        int start, end, step;
-        int length = effectParams.cardsOnRack.Count;
-
-        if (runForward)
-        {
-            start = 0;
-            end = length;
-            step = 1;
-        }
-        else
-        {
-            start = length - 1;
-            end = -1;       // one less than the lowest index
-            step = -1;
-        }
+        
+        
 
 
         for (int i = start; i != end; i+=step)
@@ -617,7 +583,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ActorDiedListener(Actor actor, ref List<IEnumerator> tasksToPerform)
+    public void ActorDiedListener(Actor actor, ref List<IEnumerator> tasksToPerform, EffectParams effectParams)
     {
         /*if (actor == currentlyTargetedActor)
         {
@@ -642,12 +608,12 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            Singleton.Instance.selectionHandler.TargetActor(enemies[i]);
+            TargetActor(enemies[i]);
 
-            if (currentAttackInfo != null)
+            if (currentEffectParams != null)
             {
-                currentAttackInfo.target = currentlyTargetedActor;
-                currentAttackInfo.targetPosition = currentlyTargetedActor.transform.position;
+                currentEffectParams.target = currentlyTargetedActor;
+                currentEffectParams.targetPos = currentlyTargetedActor.transform.position;
             }
 
             return;
@@ -676,6 +642,7 @@ public class GameManager : MonoBehaviour
         {
             playerRelics = new List<Relic>();
         }
+
         playerRelics.Add(r);
     }
 
@@ -691,5 +658,54 @@ public class GameManager : MonoBehaviour
         }
 
         return es;
+    }
+
+    public void ChangeState(State newState)
+    {
+        if (currentState != null)
+        {
+            currentState.Exit();
+        }
+
+        currentState = newState;
+        currentState.Enter();
+    }
+
+    public static void CloseShopButtonPressed()
+    {
+        CloseShopButtonPressedEvent?.Invoke();
+    }
+
+    public void TargetActor(Actor actor)
+    {
+        if (actor != currentlyTargetedActor)
+        {
+            if (currentlyTargetedActor != null)
+            {
+                currentlyTargetedActor.DeSelectActor();
+            }
+
+            currentlyTargetedActor = actor;
+        }
+
+        actor.SelectActor();
+        Singleton.Instance.gameManager.currentlyTargetedActor = actor;
+        Singleton.Instance.gameManager.targetedActorPosition = actor.transform.position;
+    }
+
+    public void MoveHandToDeck()
+    {
+        playerHand.MoveRackCardsToDeck(playerDeck);
+    }
+
+    public void MoveRackToDeck()
+    {
+        playerRack.MoveRackCardsToDeck(playerDeck);
+    }
+
+    public void MoveDiscardPileToDeckAndShuffle()
+    {
+        discardPile.MoveCardsToOtherDeck(playerDeck);
+        playerDeck.SmartShuffle(smartShuffleFactor);
     }
 }

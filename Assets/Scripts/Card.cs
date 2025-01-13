@@ -311,7 +311,7 @@ public class Card : MonoBehaviour, IBuyable
 
         Singleton.Instance.uiManager.SpawnGenericFloater(powerText.transform.position, $"+{Helpers.RoundToDecimal(powerAdd,1)}");
 
-        yield return new WaitForSeconds(0.2f);
+        yield break;
     }
 
     public void SetHasPower(bool val)
@@ -358,7 +358,7 @@ public class Card : MonoBehaviour, IBuyable
     public float GetFinalPrice()
     {
         float finalPrice = basePrice;
-        BuyableEvents.GetFinalPrice(this, ref basePrice, basePrice);
+        BuyableEvents.GetFinalPrice(this, ref finalPrice, basePrice);
 
         return finalPrice;
     }

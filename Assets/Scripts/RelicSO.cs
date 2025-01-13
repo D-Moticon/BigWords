@@ -21,7 +21,7 @@ public abstract class RelicSO : ScriptableObject, IBuyableSO
 
     public virtual void PostAttackDiscardCompleted(Relic relicInstance, ref List<IEnumerator> tasksToPerform, EffectParams effectParams) { }
 
-    public virtual void ActorDied(Relic relicInstance, Actor dyingActor, ref List<IEnumerator> tasksToPerform) { }
+    public virtual void ActorDied(Relic relicInstance, Actor dyingActor, ref List<IEnumerator> tasksToPerform, EffectParams effectParams) { }
 
     public virtual void GetBuyablePrice(Relic relicInstance, IBuyable buyable, ref float price, float bPrice) { }
 

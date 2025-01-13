@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801d8277bbf86a9478adece113cc67fc, type: 3}
   m_Name: PalindromeRelic
   m_EditorClassIdentifier: 
-  relicName: Palinilap
+  relicName: Aidromordia
   relicDescription: Retrigger palindromes backwards
   relicSprite: {fileID: 1705615154, guid: 6582f34ddd5f686408c019550cd94c9d, type: 3}
   relicSFX:
@@ -24,3 +24,4 @@ MonoBehaviour:
         Data4: 1365341124
       Path: event:/SFX/CardCountMult_06
     vol: 0.5
+  basePrice: 10
