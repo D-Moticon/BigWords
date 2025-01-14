@@ -663,6 +663,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priceText: {fileID: 9045277044768612836}
+  priceTagFrame: {fileID: 5126095867279718910}
+  affordableColor: {r: 0, g: 1, b: 0, a: 1}
+  unaffordableColor: {r: 1, g: 0, b: 0, a: 1}
   discountFeel: {fileID: 7538486005412216030}
 --- !u!1 &8946214253976038294
 GameObject:

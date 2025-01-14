@@ -7,12 +7,11 @@ public class ShopManager : MonoBehaviour
 
     public BuyableCollection buyableCollection;
     public int quantity = 3;
-    List<IBuyable> instantiatedBuyables;
+    protected List<IBuyable> instantiatedBuyables;
     public Transform buyablesParent;
 
     private void OnEnable()
     {
-        PopulateShop();
         BuyableEvents.BuyableClickedEvent += BuyableClickedListener;
     }
 
@@ -21,12 +20,17 @@ public class ShopManager : MonoBehaviour
         BuyableEvents.BuyableClickedEvent -= BuyableClickedListener;
     }
 
+    private void Start()
+    {
+        PopulateShop();
+    }
+
     void PopulateShop()
     {
         PopulateBuyables();
     }
 
-    void PopulateBuyables()
+    protected virtual void PopulateBuyables()
     {
         IBuyable[] existingBuyables = buyablesParent.GetComponentsInChildren<IBuyable>();
         for (int i = 0; i < existingBuyables.Length; i++)

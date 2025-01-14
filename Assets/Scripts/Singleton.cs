@@ -14,7 +14,7 @@ public class Singleton : MonoBehaviour
     public LetterPicker letterPicker;
     public FeelPoolManager feelPoolManager;
 
-    private void Awake()
+    private void OnEnable()
     {
         if (Instance != null && Instance != this)
         {
@@ -29,6 +29,9 @@ public class Singleton : MonoBehaviour
 
     private void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Break();
+        }
     }
 }

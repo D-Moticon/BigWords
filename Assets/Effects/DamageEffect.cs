@@ -43,6 +43,6 @@ public class DamageEffect : Effect
 
     public override string GetEffectDescription()
     {
-        throw new System.NotImplementedException();
+        return ($"Deal {baseDamage} x Card Power");
     }
 }

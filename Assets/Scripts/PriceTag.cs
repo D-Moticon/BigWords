@@ -6,12 +6,33 @@ using MoreMountains.Feedbacks;
 public class PriceTag : MonoBehaviour
 {
     public TMP_Text priceText;
+    public Image priceTagFrame;
+
+    public Color affordableColor = Color.green;
+    public Color unaffordableColor = Color.red;
+
     IBuyable buyable;
     float storedPrice;
     public MMF_Player discountFeel;
 
     public void SetPrice(float price)
     {
+        float playerCoins = Singleton.Instance.gameManager.playerCoins;
+
+        // Choose color based on affordability
+        if (playerCoins >= price)
+        {
+            priceText.color = Helpers.WithReferenceHue(priceText.color, affordableColor);
+            priceTagFrame.color = affordableColor;
+        }
+
+        else
+        {
+            priceText.color = Helpers.WithReferenceHue(priceText.color, unaffordableColor);
+            priceTagFrame.color = unaffordableColor;
+        }
+
+        // Apply the rich text with the selected color
         priceText.text = $"${Mathf.RoundToInt(price)}";
         storedPrice = price;
     }
@@ -20,12 +41,14 @@ public class PriceTag : MonoBehaviour
     {
         BuyableEvents.BuyableBoughtEvent += BuyableBoughtListener;
         Relic.relicAddedEvent += RelicAddedListener;
+        GameManager.CoinsChangedEvent += PlayerCoinsChangedListener;
     }
 
     private void OnDisable()
     {
         BuyableEvents.BuyableBoughtEvent -= BuyableBoughtListener;
         Relic.relicAddedEvent -= RelicAddedListener;
+        GameManager.CoinsChangedEvent -= PlayerCoinsChangedListener;
     }
 
     public void BuyableBoughtListener(IBuyable ib, float price)
@@ -66,5 +89,10 @@ public class PriceTag : MonoBehaviour
         }
 
         SetPrice(p);
+    }
+
+    public void PlayerCoinsChangedListener(float newCoins)
+    {
+        SetPrice(storedPrice);
     }
 }

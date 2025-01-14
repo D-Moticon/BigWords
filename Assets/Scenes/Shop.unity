@@ -205,7 +205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6047894766225125619, guid: 1ec3c50c306666849b6cf6c94b526829, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -86
       objectReference: {fileID: 0}
     - target: {fileID: 6047894766225125619, guid: 1ec3c50c306666849b6cf6c94b526829, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -319,11 +319,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1978429251181512274, guid: e2a313a7ab641b346b7a5490d3927a51, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1978429251181512274, guid: e2a313a7ab641b346b7a5490d3927a51, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1978429251181512274, guid: e2a313a7ab641b346b7a5490d3927a51, type: 3}
       propertyPath: m_LocalPosition.x
@@ -355,11 +355,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1978429251181512274, guid: e2a313a7ab641b346b7a5490d3927a51, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -719
+      value: -734
       objectReference: {fileID: 0}
     - target: {fileID: 1978429251181512274, guid: e2a313a7ab641b346b7a5490d3927a51, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 265
+      value: 276
       objectReference: {fileID: 0}
     - target: {fileID: 1978429251181512274, guid: e2a313a7ab641b346b7a5490d3927a51, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -408,6 +408,70 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &827268164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 827268167}
+  - component: {fileID: 827268166}
+  - component: {fileID: 827268165}
+  m_Layer: 0
+  m_Name: CardUpgradeShop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &827268165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827268164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5cc1f37d178a734d8c5ff68b68083f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vertical: 0
+  spacing: 4
+  offset: {x: 0, y: 0, z: 0}
+--- !u!114 &827268166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827268164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d2adcefbeb1e224183058a048aeabf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  priceTagPrefab: {fileID: 643572130222705188, guid: aac5c28aadaca9147b73bb4e35c31752, type: 3}
+  buyableCollection: {fileID: 0}
+  quantity: 3
+  buyablesParent: {fileID: 827268167}
+--- !u!4 &827268167
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827268164}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.71, y: -2.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -544,7 +608,7 @@ Transform:
   m_GameObject: {fileID: 932499323}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.71, z: 0}
+  m_LocalPosition: {x: -1.56, y: 5.48, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -633,7 +697,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   priceTagPrefab: {fileID: 643572130222705188, guid: aac5c28aadaca9147b73bb4e35c31752, type: 3}
   buyableCollection: {fileID: 11400000, guid: 4619f0ec4eb1961419ff7dede7339859, type: 2}
-  quantity: 5
+  quantity: 3
   buyablesParent: {fileID: 1506940011}
 --- !u!4 &1506940011
 Transform:
@@ -644,7 +708,7 @@ Transform:
   m_GameObject: {fileID: 1506940008}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.44, z: 0}
+  m_LocalPosition: {x: -8.19, y: -2.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -731,5 +795,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 932499324}
   - {fileID: 1506940011}
+  - {fileID: 827268167}
   - {fileID: 705965546}
   - {fileID: 898045013}

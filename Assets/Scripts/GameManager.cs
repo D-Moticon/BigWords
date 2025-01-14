@@ -8,6 +8,14 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public enum StartingState
+    {
+        encounter,
+        shop
+    }
+
+    public StartingState startingState;
+
     public State currentState;
     public List<EnemyEncounterSO> encounters;
     public int currentEncounterIndex = 0;
@@ -23,6 +31,8 @@ public class GameManager : MonoBehaviour
     public Relic relicPrefab;
     [FoldoutGroup("Prefabs")]
     public PriceTag priceTagPrefab;
+    [FoldoutGroup("Prefabs")]
+    public CardUpgrade cardUpgradePrefab;
 
     public DeckSO playerStartingDeck;
     public Transform playerDeckLocation;
@@ -35,6 +45,7 @@ public class GameManager : MonoBehaviour
 
     public Transform playerCenterLocation;
     public Transform enemyCenterLocation;
+    public Vector2 enemyPlayfieldSize = new Vector2(10f, 4f);
     
 
     [FoldoutGroup("Rules")]
@@ -88,8 +99,10 @@ public class GameManager : MonoBehaviour
     public static event System.Action CloseShopButtonPressedEvent;
 
     public delegate void AddedFloatDelegate(float valueAdded, float totalValue);
+    public delegate void FloatDelegate(float value);
     public static event AddedFloatDelegate CoinsAddedEvent;
     public static event AddedFloatDelegate CoinsSubtractedEvent;
+    public static event FloatDelegate CoinsChangedEvent;
 
     List<Actor> doomedActors = new List<Actor>(); //actors to destroy at end of frame
 
@@ -117,7 +130,7 @@ public class GameManager : MonoBehaviour
         player = startingPlayer.CreateActorFromHeroSO(actorPrefab);
         player.transform.position = playerCenterLocation.position;
 
-        playerDeck = Singleton.Instance.cardCreator.CreateDeckFromSO(playerStartingDeck);
+        playerDeck = playerStartingDeck.CreateDeckFromSO();
         playerDeck.name = "PlayerDeck";
         playerDeck.transform.position = playerDeckLocation.position;
         playerDeck.SmartShuffle(smartShuffleFactor);
@@ -130,7 +143,16 @@ public class GameManager : MonoBehaviour
             r.AddRelic();
         }
 
-        ChangeState(new StartEncounterState());
+        switch (startingState)
+        {
+            case StartingState.encounter:
+                ChangeState(new StartEncounterState());
+                break;
+            case StartingState.shop:
+                ChangeState(new ShopState());
+                break;
+        }
+        
     }
 
     private void Update()
@@ -173,17 +195,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        enemies = new List<Actor>();
-
-        for (int i = 0; i < enemyEncounterSO.enemyInfos.Count; i++)
-        {
-            EnemyEncounterSO.EnemyInfo ei = enemyEncounterSO.enemyInfos[i];
-
-            Actor enemy = ei.enemy.CreateEnemyFromSO();
-            enemy.transform.position = enemyCenterLocation.position + (Vector3)ei.position;
-            enemy.SetHealthAndMaxHealth(ei.startingHP);
-            enemies.Add(enemy);
-        }
+        enemies = enemyEncounterSO.CreateEncounterEnemies(enemyCenterLocation.position, enemyPlayfieldSize);
 
         discardsRemaining = startingDiscards;
         UpdateUI();
@@ -626,12 +638,14 @@ public class GameManager : MonoBehaviour
     {
         playerCoins += coinAmount;
         CoinsAddedEvent?.Invoke(coinAmount, playerCoins);
+        CoinsChangedEvent?.Invoke(playerCoins);
     }
 
     public void SubtractCoinsFromPlayer(float coinAmount)
     {
         playerCoins -= coinAmount;
         CoinsSubtractedEvent?.Invoke(coinAmount, playerCoins);
+        CoinsChangedEvent?.Invoke(playerCoins);
     }
 
     public void RelicAddedListener(Relic r)

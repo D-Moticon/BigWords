@@ -16,6 +16,7 @@ public class CardSO : ScriptableObject, IBuyableSO
     [SerializeReference]
     public List<Effect> cardEffects;
     public string descriptionOverride = "";
+    public List<CardSO> upgradeCards;
 
     public string GetDescription()
     {

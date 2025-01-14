@@ -43,3 +43,18 @@ public static class BuyableEvents
         BuyableClickedEvent?.Invoke(buyable);
     }
 }
+
+public interface IHoverable
+{
+    public string GetHoverableName();
+    public string GetHoverableDescription();
+    public string GetHoverableType();
+    public Sprite GetHoverableSprite();
+    public Color GetHoverableColor();
+    public Vector2 GetHoverUIOffset();
+}
+
+public interface ICardHolder
+{
+    public bool TryMoveCardToHolder(Card c, int index = -1);
+}

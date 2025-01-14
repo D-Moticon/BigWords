@@ -45,6 +45,21 @@ public class Deck : MonoBehaviour
         }
     }
 
+    public void RemoveCardPermanently(Card card)
+    {
+        if (currentCards.Contains(card))
+        {
+            currentCards.Remove(card);
+        }
+
+        if (permanentCards.Contains(card))
+        {
+            permanentCards.Remove(card);
+        }
+
+        card.DestroyCard();
+    }
+
     public void SnapCardToDeck(Card card)
     {
         card.transform.parent = this.transform;
@@ -215,5 +230,49 @@ public class Deck : MonoBehaviour
             MoveCardOffDeck(currentCards[i]);
         }
 
+    }
+
+    public List<Card> GetRandomCardsFromPermanentDeck(int quantity)
+    {
+        List<Card> shuffledDeck = new List<Card>(permanentCards);
+        shuffledDeck.Shuffle();
+
+        List<Card> finalCards = new List<Card>();
+
+        for (int i = 0; i < quantity; i++)
+        {
+            if (i > shuffledDeck.Count - 1)
+            {
+                break;
+            }
+
+            finalCards.Add(shuffledDeck[i]);
+        }
+
+        return finalCards;
+    }
+
+    public List<Card> GetRandomUpgradeableCardsFromPermanentDeck(int quantity)
+    {
+        List<Card> shuffledDeck = new List<Card>(permanentCards);
+        shuffledDeck.Shuffle();
+
+        List<Card> finalCards = new List<Card>();
+
+        for (int i = 0; i < shuffledDeck.Count; i++)
+        {
+            if (!shuffledDeck[i].GetHasPower() && shuffledDeck[i].cardSO.upgradeCards.Count == 0)
+            {
+                continue;
+            }
+
+            finalCards.Add(shuffledDeck[i]);
+            if (finalCards.Count >= quantity)
+            {
+                break;
+            }
+        }
+
+        return finalCards;
     }
 }

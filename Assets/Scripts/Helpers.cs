@@ -214,4 +214,19 @@ public static class Helpers
         // Return the first 'quantity' elements of the shuffled list
         return workingList.GetRange(0, quantity);
     }
+
+    public static Color WithReferenceHue(Color original, Color referenceHue)
+    {
+        // Convert the original and reference colors to HSV.
+        Color.RGBToHSV(original, out float origH, out float origS, out float origV);
+        Color.RGBToHSV(referenceHue, out float refH, out _, out _); // Hue from reference; discard its S and V.
+
+        // Create a new color using the hue from the reference and the saturation/value of the original.
+        Color newColor = Color.HSVToRGB(refH, origS, origV);
+
+        // Preserve the original alpha.
+        newColor.a = original.a;
+
+        return newColor;
+    }
 }

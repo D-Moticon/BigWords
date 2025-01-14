@@ -5,29 +5,6 @@ public class CardCreator : MonoBehaviour
 {
     public Card cardPrefab;
 
-    public Deck CreateDeckFromSO(DeckSO deckSO)
-    {
-        Deck deck = new GameObject().AddComponent<Deck>();
-        deck.name = "NewDeck";
-
-        for (int i = 0; i < deckSO.cardInfos.Count; i++)
-        {
-            for (int j = 0; j < deckSO.cardInfos[i].quantity; j++)
-            {
-                float power = deckSO.cardInfos[i].card.power;
-                if (deckSO.cardInfos[i].overridePower)
-                {
-                    power = deckSO.cardInfos[i].power;
-                }
-
-                Card card = Card.CreateCardFromSO(deckSO.cardInfos[i].card, deckSO.cardInfos[i].letter, power);
-                card.MoveCardToDeck(deck, 0.01f, false);
-            }
-        }
-
-        return deck;
-    }
-
     public Card CreateCardFromSO(CardSO cardSO, char letter = 'A', float power = 1)
     {
         Card newCard = Instantiate(cardPrefab, this.transform.position, Quaternion.identity);
@@ -48,6 +25,18 @@ public class CardCreator : MonoBehaviour
         newCard.SetPower(power);
         newCard.SetCardDescription(cardSO.GetDescription());
 
+        return newCard;
+    }
+
+    public Card CopyCard(Card c)
+    {
+        Card newCard = Instantiate(c);
+        return newCard;
+    }
+
+    public Card CreateCardFromSOWithTraitsOfExistingCard(Card c, CardSO cso)
+    {
+        Card newCard = CreateCardFromSO(cso, c.letter, c.GetPower());
         return newCard;
     }
 }

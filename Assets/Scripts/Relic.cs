@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MoreMountains.Feedbacks;
 using UnityEngine.UI;
 
-public class Relic : MonoBehaviour, IBuyable
+public class Relic : MonoBehaviour, IBuyable, IHoverable
 {
     public RelicSO relicSO;
     public MMF_Player relicFeel;
@@ -151,5 +151,35 @@ public class Relic : MonoBehaviour, IBuyable
     public Vector2 GetLocalPriceTagPosition()
     {
         return new Vector2(0f, 2f);
+    }
+
+    public string GetHoverableName()
+    {
+        return (relicSO.GetRelicName());
+    }
+
+    public string GetHoverableDescription()
+    {
+        return (relicSO.GetRelicDescription());
+    }
+
+    public string GetHoverableType()
+    {
+        return ("Relic");
+    }
+
+    public Sprite GetHoverableSprite()
+    {
+        return (relicSO.relicSprite);
+    }
+
+    public Color GetHoverableColor()
+    {
+        return Color.cyan;
+    }
+
+    public Vector2 GetHoverUIOffset()
+    {
+        return new Vector2(0f, 5f);
     }
 }

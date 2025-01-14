@@ -17,6 +17,7 @@ public class SelectionHandler : MonoBehaviour
     public Slot currentlyHoveredSlot;
     public Actor currentlyHoveredActor;
     public Actor currentlyTargetedActor;
+    public IHoverable currentHoverable;
 
     private void OnEnable()
     {
@@ -40,11 +41,28 @@ public class SelectionHandler : MonoBehaviour
         ShopState.ShopStateEnteredEvent -= ShopStateEnteredListener;
     }
 
+    Vector2 mousePos;
+
     // Update is called once per frame
     void Update()
     {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
+        switch (mode)
+        {
+            case Mode.play:
+                UpdatePlayMode();
+                break;
+            case Mode.shop:
+                UpdateShopMode();
+                break;
+        }
+
+        UpdateHoverable();
+    }
+
+    void UpdatePlayMode()
+    {
         if (currentlyHeldCard != null && currentlyHoveredSlot != null && currentlyHoveredSlot.GetCard() != null)
         {
             bool leftSide = false;
@@ -90,6 +108,28 @@ public class SelectionHandler : MonoBehaviour
         {
             currentlyHeldCard.transform.position = new Vector3(mousePos.x, mousePos.y, 0f);
         }
+    }
+
+    void UpdateShopMode()
+    {
+
+    }
+
+    void UpdateHoverable()
+    {
+        if (currentlyHoveredCard != null)
+        {
+            currentHoverable = currentlyHoveredCard;
+            return;
+        }
+
+        if (currentlyHoveredRelic != null)
+        {
+            currentHoverable = currentlyHoveredRelic;
+            return;
+        }
+
+        currentHoverable = null;
     }
 
     public void SlotHovered(Slot slot)

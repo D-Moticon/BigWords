@@ -20,20 +20,30 @@ public class AlphabetData
 public class LetterPicker : MonoBehaviour
 {
     public AlphabetData alphabetData;
+    private Dictionary<char, int> letterScoreMap;
 
     void Awake()
     {
-        // Load the JSON file from Resources
-        TextAsset jsonFile = Resources.Load<TextAsset>("alphabet"); // Make sure the file is named "alphabet.json" in a Resources folder
+        TextAsset jsonFile = Resources.Load<TextAsset>("alphabet");
         if (jsonFile != null)
         {
             alphabetData = JsonUtility.FromJson<AlphabetData>(jsonFile.text);
+
+            // Build the dictionary for fast lookup
+            letterScoreMap = new Dictionary<char, int>();
+            foreach (var ld in alphabetData.letters)
+            {
+                char upperLetter = char.ToUpper(ld.letterChar);
+                if (!letterScoreMap.ContainsKey(upperLetter))
+                    letterScoreMap.Add(upperLetter, ld.score);
+            }
         }
         else
         {
             Debug.LogError("Could not load alphabet.json from Resources!");
         }
     }
+
 
     public LetterData GetRandomLetter()
     {
@@ -67,4 +77,23 @@ public class LetterPicker : MonoBehaviour
         // Fallback (should not typically happen)
         return alphabetData.letters[alphabetData.letters.Count - 1];
     }
+
+    public int GetLetterScore(char letter)
+    {
+        if (letterScoreMap == null)
+        {
+            Debug.LogError("Letter score map not initialized.");
+            return 0;
+        }
+
+        char upperLetter = char.ToUpper(letter);
+        if (letterScoreMap.TryGetValue(upperLetter, out int score))
+        {
+            return score;
+        }
+
+        Debug.LogWarning($"Letter '{letter}' not found in score map.");
+        return 0;
+    }
+
 }

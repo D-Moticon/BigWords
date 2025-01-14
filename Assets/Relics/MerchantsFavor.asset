@@ -24,6 +24,6 @@ MonoBehaviour:
         Data4: 0
       Path: 
     vol: 0.5
-  basePrice: 10
+  basePrice: 15
   discountType: 0
   discountAmount: 0.15

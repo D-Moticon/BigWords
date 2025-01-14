@@ -6,10 +6,11 @@ using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine.UI;
 
-public class Card : MonoBehaviour, IBuyable
+public class Card : MonoBehaviour, IBuyable, IHoverable
 {
     [SerializeField] private string cardName;
     [SerializeField] private TMP_Text cardNameText;
+    private string cardDescription;
     public CardSO cardSO;
     private CardType cardType;
     [SerializeField] private Image cardImageRenderer;
@@ -49,6 +50,7 @@ public class Card : MonoBehaviour, IBuyable
     public static event CardDelegate cardClickedEvent;
 
     public float basePrice = 0f;
+    public bool clickable = true;
 
     public char GetLetter()
     {
@@ -73,9 +75,15 @@ public class Card : MonoBehaviour, IBuyable
         cardNameText.text = newName;
     }
 
-    public void SetCardDescription(string description)
+    public void SetCardDescription(string desc)
     {
-        descriptionText.text = description;
+        cardDescription = desc;
+        descriptionText.text = desc;
+    }
+
+    public string GetCardDescription()
+    {
+        return (cardDescription);
     }
 
     public void SetCardImage(Sprite newIMG)
@@ -346,6 +354,11 @@ public class Card : MonoBehaviour, IBuyable
 
     public void CardClicked()
     {
+        if (!clickable)
+        {
+            return;
+        }
+
         cardClickedEvent?.Invoke(this);
         BuyableEvents.BuyableClicked(this);
     }
@@ -378,5 +391,130 @@ public class Card : MonoBehaviour, IBuyable
         return new Vector2(0f, 3.0f);
     }
 
-    
+    public Card GetPowerUpgradedCard(float powerGain)
+    {
+        if (!hasPower)
+        {
+            return null;
+        }
+
+        Card c = Singleton.Instance.cardCreator.CopyCard(this);
+        c.SetPower(this.power + powerGain);
+        return c;
+    }
+
+    public Card GetCardUpgradedCard()
+    {
+        if (cardSO.upgradeCards.Count == 0)
+        {
+            return null;
+        }
+
+        int rand = Random.Range(0, cardSO.upgradeCards.Count);
+        CardSO cso = cardSO.upgradeCards[rand];
+        Card c = Singleton.Instance.cardCreator.CreateCardFromSOWithTraitsOfExistingCard(this, cso);
+        return c;
+    }
+
+    public Card GetRandomCardUpgrade(float powerGain, out float price)
+    {
+        List<Card> possibleUpgrades = new List<Card>();
+        List<float> prices = new List<float>();
+
+        // Reference to LetterPicker if needed for pricing logic (not used here)
+        // LetterPicker letterPicker = FindObjectOfType<LetterPicker>();
+
+        // Try the power upgrade
+        Card powerUpgrade = GetPowerUpgradedCard(powerGain);
+        if (powerUpgrade != null)
+        {
+            possibleUpgrades.Add(powerUpgrade);
+            // Example pricing logic for power upgrade
+            prices.Add(powerGain * 5f); // For example, price scales with powerGain
+        }
+
+        // Try the card-based upgrade
+        Card cardUpgrade = GetCardUpgradedCard();
+        if (cardUpgrade != null)
+        {
+            possibleUpgrades.Add(cardUpgrade);
+            // Example pricing logic for card upgrade
+            prices.Add(cardUpgrade.cardSO.basePrice); // Fixed price for a card-based upgrade, adjust as necessary
+        }
+
+        // Add additional upgrade function calls here as needed
+        // ...
+
+        // If no upgrades available, set price to 0 and return null
+        if (possibleUpgrades.Count == 0)
+        {
+            price = 0f;
+            return null;
+        }
+
+        // Randomly select one of the possible upgrades
+        int randomIndex = Random.Range(0, possibleUpgrades.Count);
+        Card chosenCard = possibleUpgrades[randomIndex];
+        price = prices[randomIndex];  // Set output price based on selected upgrade
+
+        // Destroy all non-selected cards
+        for (int i = 0; i < possibleUpgrades.Count; i++)
+        {
+            if (i != randomIndex && possibleUpgrades[i] != null)
+            {
+                Destroy(possibleUpgrades[i].gameObject);
+            }
+        }
+
+        return chosenCard;
+    }
+
+    public void DestroyCard()
+    {
+        if (currentSlot != null)
+        {
+            currentSlot.RemoveCard();
+        }
+        Destroy(this.gameObject);
+    }
+
+    public string GetHoverableName()
+    {
+        return GetCardName();
+    }
+
+    public string GetHoverableDescription()
+    {
+        return GetCardDescription();
+    }
+
+    public string GetHoverableType()
+    {
+        if (cardType == null)
+        {
+            return "";
+        }
+
+        return (cardType.cardTypeName);
+    }
+
+    public Sprite GetHoverableSprite()
+    {
+        return (cardImageRenderer.sprite);
+    }
+
+    public Color GetHoverableColor()
+    {
+        if (cardType == null)
+        {
+            return Color.white;
+        }
+
+        return (cardType.cardTypeColor);
+    }
+
+    public Vector2 GetHoverUIOffset()
+    {
+        return new Vector2(0f, 6.5f);
+    }
 }

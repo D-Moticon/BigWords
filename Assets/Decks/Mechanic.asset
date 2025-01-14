@@ -13,143 +13,15 @@ MonoBehaviour:
   m_Name: Mechanic
   m_EditorClassIdentifier: 
   cardInfos:
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 65
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 44b56d3b5bea9494f9fd7217eca7b6f9, type: 2}
-    letter: 65
-    overridePower: 0
-    power: 1
-    quantity: 3
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 69
-    overridePower: 0
-    power: 1
-    quantity: 4
-  - card: {fileID: 11400000, guid: 44b56d3b5bea9494f9fd7217eca7b6f9, type: 2}
-    letter: 69
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 73
-    overridePower: 0
-    power: 1
-    quantity: 4
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 79
-    overridePower: 0
-    power: 1
-    quantity: 4
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 85
-    overridePower: 0
-    power: 1
-    quantity: 4
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 66
-    overridePower: 1
-    power: 2
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 67
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 68
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 70
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 71
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 72
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 74
-    overridePower: 1
-    power: 3
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 75
-    overridePower: 1
-    power: 2
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 76
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 77
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 78
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 80
-    overridePower: 1
-    power: 2
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 81
-    overridePower: 1
-    power: 3
-    quantity: 1
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 82
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 83
-    overridePower: 0
-    power: 1
-    quantity: 3
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 84
-    overridePower: 0
-    power: 1
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 86
-    overridePower: 1
-    power: 3
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 87
-    overridePower: 1
-    power: 2
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 88
-    overridePower: 1
-    power: 3
-    quantity: 1
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
-    letter: 89
-    overridePower: 1
-    power: 2
-    quantity: 2
-  - card: {fileID: 11400000, guid: 32616a801f5575440966f8e3acd8876e, type: 2}
+  - card: {fileID: 11400000, guid: c60704ceee2fb244298796125aa4d209, type: 2}
+    quantity: 30
+    letterAssignMode: 0
     letter: 90
-    overridePower: 1
+    overridePower: 0
     power: 3
-    quantity: 1
+  - card: {fileID: 11400000, guid: 44b56d3b5bea9494f9fd7217eca7b6f9, type: 2}
+    quantity: 7
+    letterAssignMode: 0
+    letter: 90
+    overridePower: 0
+    power: 3

@@ -14,8 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyInfos:
   - enemy: {fileID: 11400000, guid: 7a2320beb70f5a84aa810582ff8195ca, type: 2}
-    position: {x: 2, y: 3}
-    startingHP: 5
-  - enemy: {fileID: 11400000, guid: 7a2320beb70f5a84aa810582ff8195ca, type: 2}
-    position: {x: 2, y: -3}
-    startingHP: 5
+    startingHP: 10
+    quantity: 3

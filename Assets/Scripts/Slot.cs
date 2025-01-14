@@ -46,6 +46,13 @@ public class Slot : MonoBehaviour
     {
         if (card != null)
         {
+            Card c = GetComponentInChildren<Card>();
+            if (c != null)
+            {
+                print("Card was in slot but not assigned");
+                card = c;
+            }
+
             return card;
         }
 
